@@ -1,12 +1,3 @@
----
-output: 
-  github_document:
-  html_preview: false
----
-
-```{r setup, include=FALSE}
-knitr::opts_chunk$set(echo = TRUE, eval = FALSE)
-```
 
 ## About
 
@@ -14,14 +5,16 @@ This package contains tools for analyzing paired survival data.
 
 ## Install
 
-The package is currently hosted on Github. If you have not already, you will need to install the devtools package before using the package:
+The package is currently hosted on Github. If you have not already, you
+will need to install the devtools package before using the package:
 
-```{r, eval = FALSE}
+``` r
 install.packages("devtools")
 ```
 
 Once installed, simply run the following in R:
-```{r, eval = FALSE}
+
+``` r
 devtools::install_github("umich-biostatistics/pairsurv")
 ```
 
@@ -29,7 +22,7 @@ devtools::install_github("umich-biostatistics/pairsurv")
 
 Here is an example R script using the `pairdata.csv` data set.
 
-```{r, eval = FALSE}
+``` r
 library(pairsurv)
 
 pairdata=read.csv("pairdata.csv",h=T)
