@@ -1,5 +1,6 @@
 ---
-output: github_document
+output: github_document:
+  html_preview: false
 ---
 
 ```{r setup, include=FALSE}
@@ -14,12 +15,12 @@ This package contains tools for analyzing paired survival data.
 
 The package is currently hosted on Github. If you have not already, you will need to install the devtools package before using the package:
 
-```r
+```{r, eval = FALSE}
 install.packages("devtools")
 ```
-Once installed, simply run the following in R:
 
-```r
+Once installed, simply run the following in R:
+```{r, eval = FALSE}
 devtools::install_github("umich-biostatistics/pairsurv")
 ```
 
@@ -27,7 +28,7 @@ devtools::install_github("umich-biostatistics/pairsurv")
 
 Here is an example R script using the `pairdata.csv` data set.
 
-```r
+```{r, eval = FALSE}
 library(pairsurv)
 
 pairdata=read.csv("pairdata.csv",h=T)
