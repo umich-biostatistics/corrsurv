@@ -1,0 +1,17 @@
+Package: pairsurv
+Title: Tests for paired survival data
+Version: 0.0.1
+Authors@R: c(
+    person(given = "Michael",
+           family = "Kleinsasser",
+           role = c("cre"),
+           email = "mkleinsa@umich.edu"),
+    person(given = "Susan",
+           family = "Murray",
+           role = c("aut"),
+           email = "skmurray@umich.edu"))
+Description: Collection of tests for paired survival data.
+License: What license it uses
+NeedsCompilation: yes
+Encoding: UTF-8
+LazyData: true
