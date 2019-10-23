@@ -1,4 +1,4 @@
-pairsurv
+Get started with pairsurv
 ================
 
 ## About
