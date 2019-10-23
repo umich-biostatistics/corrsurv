@@ -1,7 +1,6 @@
 ---
 title: "Get started with pairsurv"
-date: "10/23/2019"
-output: rmarkdown::github_document
+output: github_document
 ---
 
 ```{r setup, include=FALSE}
