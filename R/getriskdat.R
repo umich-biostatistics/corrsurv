@@ -1,27 +1,9 @@
 
-#' Title for getriskdat function. <10 words
-#' 
-#' Short description for function. What does it do? What does the output include?
-#' Is it a helper function?
-#'
-#' @param time.fail.frame insert description and data type, default value if needed
-#' @param extralooks
-#' 
-#' @details If no specific time points are given, calculate estimates at all 
-#' unique time points (includes both failure and censoring times) in the data.
-#'
-#' @return insert description and data type and what it contains
-#'
-#' @seealso 
-#'
-#' @references 
-#'
-#' @examples 
-#' 
-#' @export 
-#'
 
 getriskdat=function(time.fail.frame,extralooks=c(NA,NA)) {
+  
+  # If no specific time points are given, calculate estimates at all 
+  # unique time points (includes both failure and censoring times) in the data.
 
   time=time.fail.frame[,1]
   fail=time.fail.frame[,2]
