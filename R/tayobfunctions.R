@@ -3,11 +3,8 @@
 #library(MASS)
 #library(gdata)
 
-#' 
-#' 
-#' 
-#' 
-#' 
+#' Helper function for sums
+
 sum_function=function(X)
 {
   temp=array(X,c(length(X),length(X)))
@@ -509,8 +506,6 @@ format_data_GL=function(X, delta, Z_star,time)
 
 #' Helper to get deaths at time i
 #'
-#'
-#'
 
 get_dN_for_i=function(X1)
 {
@@ -518,11 +513,18 @@ get_dN_for_i=function(X1)
   apply(temp,2,sum,na.rm=T)
 }
 
+#' Calculate test statistic for Ghosh and Lin method
 #'
+#' @param p_GL 
+#' @param time 
+#' @param data1_format Formatted data set 1
+#' @param data2_format Formatted data set 2
 #'
-#'
-#'
-#'
+#' @return A \code{list} object which contains
+#' \itemize{
+#'   \item{test_stat_p}{P-value for test statistic}
+#' }
+
 GL_test_stat=function(p_GL,time,data1_format,data2_format)
 {
   #Load data
