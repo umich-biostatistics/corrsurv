@@ -370,9 +370,17 @@ two_sample_recurrent_events_test=function(X,delta,Z,Group,Tau,t,method="average"
 #'
 #' @param X vector containing observed time to terminating event
 #' @param delta vector that is 1 if terminating event is observed and 0 if patient is censored
-#' @param Z_star 
+#' @param Z_star fill
 #'
 #'
+#' @return A \code{list} object which contains
+#' \itemize {
+#'   \item{ID}{Patient ID}
+#'   \item{T_start}{start time}
+#'   \item{T_stop}{Stop time}
+#'   \item{status}{status indicator: 1 if event occured, 0 if censored}
+#' }
+
 format_data_AG=function(X, delta, Z_star)
 {
   ############format observed data for Andersen-Gill method
@@ -408,11 +416,17 @@ format_data_AG=function(X, delta, Z_star)
   list(ID=ID_AG,T_start=T_start,T_stop=T_stop,status=status)
 }
 
+#' Andersen-Gill test
 #'
+#' @param data1_format Data for sample 1 formatted using \code{format_data_AG}
+#' @param data2_format Data for sample 2 formatted using \code{format_data_AG}
+#' 
+#' @return A \code{list} object which contains
+#' \itemize {
+#'   \item{test_stat_p}{p-value for the test}
+#' }
 #'
-#'
-#'
-#'
+
 AG_test_stat=function(data1_format,data2_format)
 {
   #Andersen-Gill model based two-sample test
@@ -427,11 +441,25 @@ AG_test_stat=function(data1_format,data2_format)
   list(test_stat_p=test_stat_p)
 }
 
+#' Format observed data for Ghosh and Lin method
 #'
+#' @param X vector containing observed time to terminating event
+#' @param delta vector that is 1 if terminating event is observed and 0 if patient 
+#' is censored
+#' @param Z_star fill
+#' @param time vector containing start times of follow-up windows chosen
 #'
+#' @return A \code{list} object which contains
+#' \itemize {
+#'   \item{Y}{}
+#'   \item{tau}{}
+#'   \item{dmu_hat}{}
+#'   \item{dch_hat}{}
+#'   \item{dpsi_i}{}
+#'   \item{dM_D_i}{}
+#' }
 #'
-#'
-#'
+
 format_data_GL=function(X, delta, Z_star,time)
 {
   ############format observed data for Ghosh and Lin method
@@ -479,11 +507,11 @@ format_data_GL=function(X, delta, Z_star,time)
   list(Y=Y,tau=tau,dmu_hat=dmu_hat,dch_hat=dch_hat,dpsi_i=dpsi_i,dM_D_i=dM_D_i)
 }
 
+#' Helper to get deaths at time i
 #'
 #'
 #'
-#'
-#'
+
 get_dN_for_i=function(X1)
 {
   temp=(X1==time_array2)
