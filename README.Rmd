@@ -33,7 +33,7 @@ Here is an example R script using the `pairdata.csv` data set.
 ```{r, eval = FALSE}
 library(pairsurv)
 
-pairdata=read.csv("pairdata.csv",h=T)
+data(pairdata)
 
 eyeresults=matched.survtest.9.10.99(pairdata$x1, pairdata$delta1, pairdata$x2, pairdata$delta2, 3711)
 
