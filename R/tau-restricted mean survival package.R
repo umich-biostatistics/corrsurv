@@ -362,37 +362,37 @@ get_q_alpha=function(kappa,alpha,n_sim)
 }
 
 #####################
-# Example
+# Example - to add to documentation!
 #####################
 
-#read in example data
-data=read.csv("example_data.csv")
-max(data$X)
-output=tau_restricted_mean_survival(X=data$X,delta=data$delta,Tau=12,t=seq(from=0,to=24,by=6),var_output="all",plot=TRUE,conservative_index=10)
-
-output=tau_restricted_mean_survival(X=data$X,delta=data$delta,Tau=12,t=seq(from=0,to=24,by=6))
-# ****************************************************************************************
-#   Nonparametric estimation of restricted mean survival across multiple follow-up intervals
-# ****************************************************************************************
-#   Number of patients used in the analysis is  100
-# Start time of follow-up intervals: 0 6 12 18 24
-# Restricted Mean Survival Estimate= 10.9551
-# Proposed Variance= 0.0277
-
-output=tau_restricted_mean_survival(X=data$X,delta=data$delta,Tau=12,t=seq(from=0,to=24,by=6),var_output="independence")
-# ****************************************************************************************
-#   Nonparametric estimation of restricted mean survival across multiple follow-up intervals
-# ****************************************************************************************
-#   Number of patients used in the analysis is  100
-# Start time of follow-up intervals: 0 6 12 18 24
-# Restricted Mean Survival Estimate= 10.9551
-# Independent Variance= 0.0186
-
-output=tau_restricted_mean_survival(X=data$X,delta=data$delta,Tau=12,t=seq(from=0,to=24,by=6),var_output="sandwich")
-# ****************************************************************************************
-#   Nonparametric estimation of restricted mean survival across multiple follow-up intervals
-# ****************************************************************************************
-#   Number of patients used in the analysis is  100
-# Start time of follow-up intervals: 0 6 12 18 24
-# Restricted Mean Survival Estimate= 10.9551
-# Sandwich Variance= 0.022
+# #read in example data
+# data=read.csv("example_data.csv")
+# max(data$X)
+# output=tau_restricted_mean_survival(X=data$X,delta=data$delta,Tau=12,t=seq(from=0,to=24,by=6),var_output="all",plot=TRUE,conservative_index=10)
+# 
+# output=tau_restricted_mean_survival(X=data$X,delta=data$delta,Tau=12,t=seq(from=0,to=24,by=6))
+# # ****************************************************************************************
+# #   Nonparametric estimation of restricted mean survival across multiple follow-up intervals
+# # ****************************************************************************************
+# #   Number of patients used in the analysis is  100
+# # Start time of follow-up intervals: 0 6 12 18 24
+# # Restricted Mean Survival Estimate= 10.9551
+# # Proposed Variance= 0.0277
+# 
+# output=tau_restricted_mean_survival(X=data$X,delta=data$delta,Tau=12,t=seq(from=0,to=24,by=6),var_output="independence")
+# # ****************************************************************************************
+# #   Nonparametric estimation of restricted mean survival across multiple follow-up intervals
+# # ****************************************************************************************
+# #   Number of patients used in the analysis is  100
+# # Start time of follow-up intervals: 0 6 12 18 24
+# # Restricted Mean Survival Estimate= 10.9551
+# # Independent Variance= 0.0186
+# 
+# output=tau_restricted_mean_survival(X=data$X,delta=data$delta,Tau=12,t=seq(from=0,to=24,by=6),var_output="sandwich")
+# # ****************************************************************************************
+# #   Nonparametric estimation of restricted mean survival across multiple follow-up intervals
+# # ****************************************************************************************
+# #   Number of patients used in the analysis is  100
+# # Start time of follow-up intervals: 0 6 12 18 24
+# # Restricted Mean Survival Estimate= 10.9551
+# # Sandwich Variance= 0.022
