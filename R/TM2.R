@@ -18,178 +18,207 @@
   # n.sim=number of samples simulated to calculate confidence bands
 
 #Load required packages
-library(survival)
-library(MASS)
+# library(survival)
+# library(MASS)
 
 #Main Function
-tau_restricted_mean_survival=function(X, delta, Tau, t, var_output="proposed",plot=FALSE,alpha=0.05,conservative_index=25,k=500,n.sim=1000)
-{
+tau_restricted_mean_survival = function(X, delta, Tau, t, var_output = "proposed", 
+                                        plot = FALSE, alpha = 0.05, conservative_index = 25, 
+                                        k = 500, n.sim = 1000) { 
   #CHECK FOR ERRORS IN INPUT
-  if(sum(X<0)>0)
-  {
+  
+  if(sum(X < 0) > 0) {
     stop("Error in follow-up times input")
   }
-  if(sum(delta<0 | delta>1 | floor(delta)!=delta)>0)
-  {
+  
+  if(sum(delta < 0 | delta > 1 | floor(delta) != delta) > 0) {
     stop("Error in failure indicator input")
   }   
-  if(Tau>max(X))
-  {
+  
+  if(Tau > max(X)) {
     stop("Upper limit of integration greater than largest observed follow-up time")
   }
-  if(Tau<0)
-  {
+  
+  if(Tau < 0) {
     stop("Invalid upper limit of integration")
   }
-  if(max(t)>(max(X)-Tau))
-  {
+  
+  if(max(t) > (max(X) - Tau)) {
     stop("Largest start time greater than allowable")
   }
-  if(length(unique(t))!=length(t))
-  {
+  
+  if(length(unique(t)) != length(t)) {
     stop("Repeated values in start time vector")
   }
-  if(var_output!="proposed" & var_output!="independence" & var_output!="sandwich" & var_output!="all")
-  {
+  
+  if(var_output != "proposed" & var_output != "independence" & 
+     var_output != "sandwich" & var_output != "all") {
     stop("Invalid variance type")
   }
   
   #remove any subjects with missing data
-  data=data.frame(X,delta)
-  data_nomiss=na.omit(data)
-  X_nomiss=data_nomiss$X
-  delta_nomiss=data_nomiss$delta
-  n=length(X_nomiss)
-  b=length(t)
-  Tau=Tau
+  data = data.frame(X, delta)
+  data_nomiss = na.omit(data)
+  X_nomiss = data_nomiss$X
+  delta_nomiss = data_nomiss$delta
+  n = length(X_nomiss)
+  b = length(t)
+  Tau = Tau
   
   #PUT DATA IN CORRECT FORMAT
-  X_tk=array(NA,c(n,b))
-  delta_tk=array(NA,c(n,b))
-  for(k in 1:b)
-  {
-    X_tk[,k]=(X_nomiss-t[k])*as.numeric(X_nomiss>=t[k])
-    delta_tk[,k]=delta_nomiss*as.numeric(X_nomiss>=t[k])
+  X_tk = array(NA, c(n, b))
+  delta_tk = array(NA, c(n, b))
+  
+  for(k in 1:b) {
+    X_tk[,k] = (X_nomiss - t[k])*as.numeric(X_nomiss >= t[k])
+    delta_tk[,k] = delta_nomiss*as.numeric(X_nomiss >= t[k])
   }
-  X_km=array(X_tk,c(n*b,1))
-  delta_km=array(delta_tk,c(n*b,1))
   
-  results=get_independent_var(X_km,delta_km,Tau,t,n)
+  X_km = array(X_tk, c(n*b, 1))
+  delta_km = array(delta_tk, c(n*b, 1))
   
-  proposed_variance=NULL
-  sandwich_variance=NULL
-  independent_variance=NULL
+  results = get_independent_var(X_km, delta_km, Tau, t, n)
   
-  Output="****************************************************************************************"
-  Output=rbind(Output,"Nonparametric estimation of restricted mean survival across multiple follow-up intervals")
-  Output=rbind(Output,"****************************************************************************************")
-  Output=rbind(Output,paste("Number of patients used in the analysis is ", n))
-  t_for_printing=paste(t[1])
-  for(k in 2:b)
-  {
-    t_for_printing=paste(t_for_printing,t[k])
+  proposed_variance = NULL
+  sandwich_variance = NULL
+  independent_variance = NULL
+  
+  Output = "****************************************************************************************"
+  Output = rbind(Output, "Nonparametric estimation of restricted mean survival across multiple follow-up intervals")
+  Output = rbind(Output, "****************************************************************************************")
+  Output = rbind(Output, paste("Number of patients used in the analysis is ", n))
+  t_for_printing = paste(t[1])
+  
+  for(k in 2:b) {
+    t_for_printing = paste(t_for_printing, t[k])
   }
-  Output=rbind(Output,paste("Start time of follow-up intervals:", t_for_printing))
-  Output=rbind(Output,paste("Restricted Mean Survival Estimate=",round(results$mean,4)))
   
-  if(var_output=="proposed" | var_output=="all")
-  {
-    variance_results=get_williams_var(X_km,delta_km,X_tk,delta_tk,Tau,t,n)
-    Output=rbind(Output,paste("Proposed Variance=",round(variance_results$var,4)))
-    proposed_variance=variance_results$var
+  Output = rbind(Output, paste("Start time of follow-up intervals:", t_for_printing))
+  Output = rbind(Output, paste("Restricted Mean Survival Estimate=", round(results$mean, 4)))
+  
+  if(var_output == "proposed" | var_output == "all") {
+    variance_results = get_williams_var(X_km, delta_km, X_tk, delta_tk, Tau, t, n)
+    Output = rbind(Output, paste("Proposed Variance=", round(variance_results$var, 4)))
+    proposed_variance = variance_results$var
   }
-  if(var_output=="sandwich" | var_output=="all")
-  {
-    variance_results=get_sandwich_var(X_km,delta_km,X_tk,delta_tk,Tau,t,n)
-    Output=rbind(Output,paste("Sandwich Variance=",round(variance_results$var,4)))
-    sandwich_variance=variance_results$var
+  
+  if(var_output == "sandwich" | var_output == "all") {
+    variance_results = get_sandwich_var(X_km, delta_km, X_tk, delta_tk, Tau, t, n)
+    Output = rbind(Output, paste("Sandwich Variance=", round(variance_results$var, 4)))
+    sandwich_variance = variance_results$var
   }  
-  if(var_output=="independence" | var_output=="all")
-  {
-    Output=rbind(Output,paste("Independent Variance=",round(results$var,4)))
-    independent_variance=results$var
-  }  
+  
+  if(var_output == "independence" | var_output == "all") {
+    Output = rbind(Output, paste("Independent Variance=", round(results$var, 4)))
+    independent_variance = results$var
+  }
+  
   cat(Output,sep="\n")
   
   RMRL_output=NULL
-  if(plot==TRUE)
-  {
-    RMRL_output=plot_RMRL(X=X_nomiss,delta=delta_nomiss,Tau=Tau,alpha=alpha,conservative_index=conservative_index,k=k,n.sim=n.sim)
+  
+  if(plot == TRUE){
+    RMRL_output = plot_RMRL(X = X_nomiss, delta = delta_nomiss, Tau = Tau, 
+                            alpha = alpha, conservative_index = conservative_index, 
+                            k = k, n.sim = n.sim)
   }
-  list(Mean=results$mean,  proposed_variance=proposed_variance, sandwich_variance=sandwich_variance, independent_variance=independent_variance,RMRL_output=RMRL_output)
+  
+  list(
+    Mean = results$mean,  
+    proposed_variance = proposed_variance, 
+    sandwich_variance = sandwich_variance, 
+    independent_variance = independent_variance, 
+    RMRL_output = RMRL_output
+    )
 }
+
 
 #######################
 #variance functions
 #######################
-get_independent_var=function(X_km,delta_km,Tau,t,n)
-{
-  b=length(t)
-  km_results=summary(survfit(Surv(X_km,delta_km)~1))
-  T=c(0,km_results$time[km_results$time<=Tau],Tau)
-  dN=c(0,km_results$n.event[km_results$time<=Tau])
-  Y=c(n*b,km_results$n.risk[km_results$time<=Tau])
-  M=sum(as.numeric(dN>0))
-  time_int=T[2:(M+2)]-T[1:(M+1)]
+get_independent_var = function(X_km, delta_km, Tau, t, n) {
+  b = length(t)
+  km_results = summary(survfit(Surv(X_km, delta_km) ~ 1))
+  T = c(0, km_results$time[km_results$time <= Tau], Tau)
+  dN = c(0, km_results$n.event[km_results$time <= Tau])
+  Y = c(n*b,km_results$n.risk[km_results$time <= Tau])
+  M = sum(as.numeric(dN > 0))
+  time_int = T[2:(M+2)] - T[1:(M+1)]
   
-  CH=rep(NA,M+1)
-  var_CH=rep(NA,M+1)
-  for(m in 1:(M+1))
-  {
-    CH[m]=sum((dN/Y)[1:m])
-    var_CH[m]=sum((dN/(Y^2))[1:m])
+  CH = rep(NA, M+1)
+  var_CH = rep(NA, M+1)
+  
+  for(m in 1:(M+1)){
+    CH[m] = sum((dN/Y)[1:m])
+    var_CH[m] = sum((dN/(Y^2))[1:m])
   }
-  var_CH_array=array(NA,c(M+1,M+1))
-  for(m in 1:(M+1))
-  {
-    var_CH_array[m:(M+1),m:(M+1)]=var_CH[m]
+  
+  var_CH_array = array(NA, c(M+1, M+1))
+  
+  for(m in 1:(M+1)) {
+    var_CH_array[m:(M+1), m:(M+1)] = var_CH[m]
   }
-  S_hat=exp(-CH)
-  mean=sum(time_int*S_hat)
-  ind_var=sum(array(time_int*S_hat,c(M+1,1))%*%array(time_int*S_hat,c(1,M+1))*var_CH_array)
-  list(mean=mean,var=ind_var)
+  
+  S_hat = exp(-CH)
+  mean = sum(time_int*S_hat)
+  ind_var = sum(array(time_int*S_hat, c(M+1, 1)) %*% 
+                 array(time_int*S_hat, c(1, M+1))*var_CH_array)
+  list(
+    mean = mean, 
+    var = ind_var
+    )
 }
 
+
 #proposed variance
-get_williams_var=function(X_km,delta_km,X_array,delta_array,Tau,t,n)
-{
-  b=length(t)
-  km_results=summary(survfit(Surv(X_km,delta_km)~1))
-  T=c(0,km_results$time[km_results$time<=Tau],Tau)
-  dN_old=c(0,km_results$n.event[km_results$time<=Tau])
-  Y_old=c(n*b,km_results$n.risk[km_results$time<=Tau])
-  M=sum(as.numeric(dN_old>0))
-  time_int=T[2:(M+2)]-T[1:(M+1)]
-  CH=rep(NA,M+1)
-  for(m in 1:(M+1))
-  {
-    CH[m]=sum((dN_old/Y_old)[1:m])
-  }
-  S_hat=exp(-CH)
+get_williams_var = function(X_km, delta_km, X_array, delta_array, Tau, t, n) {
+  b = length(t)
+  km_results = summary(survfit(Surv(X_km, delta_km) ~ 1))
+  T = c(0, km_results$time[km_results$time <= Tau], Tau)
+  dN_old = c(0, km_results$n.event[km_results$time <= Tau])
+  Y_old = c(n*b, km_results$n.risk[km_results$time <= Tau])
+  M = sum(as.numeric(dN_old > 0))
+  time_int = T[2:(M+2)] - T[1:(M+1)]
+  CH = rep(NA, M+1)
   
-  dN_i=array(NA,c(n,M+1))
-  Y_i=array(NA,c(n,M+1))
-  for(m in 1:(M+1))
-  {
-    dN_i[,m]=apply(array(as.numeric(round(X_array,8)==round(T[m],8) & delta_array==1),c(n,b)),1,sum)
-    Y_i[,m]=apply(array(as.numeric(round(X_array,8)>=round(T[m],8)),c(n,b)),1,sum)
+  for(m in 1:(M+1)) {
+    CH[m] = sum((dN_old/Y_old)[1:m])
   }
-  dN=apply(dN_i,2,sum)
-  Y=apply(Y_i,2,sum)
-  q=dN/Y
-  z_i_q=t(t(dN_i-t(q*t(Y_i)))*(1/Y))
+
+  S_hat = exp(-CH)
   
-  z_i_S_old=rep(0,n)
-  z_i_ATau=time_int[1]*z_i_S_old
-  for(m in 2:(M+1))
-  {
-    z_i_S_new=exp(-q[m])*z_i_S_old + S_hat[m]*z_i_q[,m]
-    z_i_ATau=z_i_ATau + time_int[m]*z_i_S_new
-    z_i_S_old=z_i_S_new
+  dN_i = array(NA, c(n, M+1))
+  Y_i = array(NA, c(n, M+1))
+  
+  for(m in 1:(M+1)) {
+    dN_i[,m] = apply(array(as.numeric(round(X_array, 8) == round(T[m], 8) & delta_array == 1), 
+                           c(n, b)), 1, sum)
+    Y_i[,m] = apply(array(as.numeric(round(X_array, 8) >= round(T[m], 8)), 
+                          c(n, b)), 1, sum)
   }
-  z_bar_ATau=sum(z_i_ATau)/n
-  williams_var=n*sum((z_i_ATau-z_bar_ATau)^2)/(n-1)
-  list(var=williams_var)
+  
+  dN = apply(dN_i, 2, sum)
+  Y = apply(Y_i, 2, sum)
+  q = dN / Y
+  z_i_q = t(t(dN_i - t(q*t(Y_i)))*(1/Y))
+  
+  z_i_S_old = rep(0, n)
+  z_i_ATau = time_int[1]*z_i_S_old
+  
+  for(m in 2:(M+1)) {
+    z_i_S_new = exp(-q[m])*z_i_S_old + S_hat[m]*z_i_q[,m]
+    z_i_ATau = z_i_ATau + time_int[m]*z_i_S_new
+    z_i_S_old = z_i_S_new
+  }
+  
+  z_bar_ATau = sum(z_i_ATau) / n
+  williams_var = n*sum((z_i_ATau - z_bar_ATau)^2) / (n-1)
+  
+  return(
+    list(
+      var = williams_var
+    )
+  )
 }
 
 #Robust Sandwich Variance 
