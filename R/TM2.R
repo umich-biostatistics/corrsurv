@@ -221,173 +221,196 @@ get_williams_var = function(X_km, delta_km, X_array, delta_array, Tau, t, n) {
   )
 }
 
+
 #Robust Sandwich Variance 
-get_sandwich_var=function(X_km,delta_km,X_array,delta_array,Tau,t,n)
-{
-  b=length(t)
-  km_results=summary(survfit(Surv(X_km,delta_km)~1))
-  T=c(0,km_results$time[km_results$time<=Tau],Tau)
-  dN=c(0,km_results$n.event[km_results$time<=Tau])
-  Y=c(n*b,km_results$n.risk[km_results$time<=Tau])
-  M=sum(as.numeric(dN>0))
-  time_int=T[2:(M+2)]-T[1:(M+1)]
+get_sandwich_var = function(X_km, delta_km, X_array, delta_array, Tau, t, n) {
+  b = length(t)
+  km_results = summary(survfit(Surv(X_km, delta_km) ~ 1))
+  T = c(0, km_results$time[km_results$time <= Tau], Tau)
+  dN = c(0, km_results$n.event[km_results$time <= Tau])
+  Y = c(n*b, km_results$n.risk[km_results$time <= Tau])
+  M = sum(as.numeric(dN > 0))
+  time_int = T[2:(M+2)] - T[1:(M+1)]
   
-  dN_i_Tj=array(NA,c(n,M+1))
-  Y_i_Tj=array(NA,c(n,M+1))
-  for(m in 1:(M+1))
-  {
-    dN_i_Tj[,m]=apply(array(as.numeric(round(X_array,8)==round(T[m],8) & delta_array==1),c(n,b)),1,sum)
-    Y_i_Tj[,m]=apply(array(as.numeric(round(X_array,8)>=round(T[m],8)),c(n,b)),1,sum)
+  dN_i_Tj = array(NA, c(n, M+1))
+  Y_i_Tj = array(NA, c(n, M+1))
+  
+  for(m in 1:(M+1)) {
+    dN_i_Tj[,m] = apply(array(as.numeric(round(X_array, 8) == round(T[m], 8) & delta_array == 1), 
+                              c(n, b)), 1, sum)
+    Y_i_Tj[,m] = apply(array(as.numeric(round(X_array, 8) >= round(T[m], 8)), 
+                             c(n, b)), 1, sum)
   }
   
-  Y_array=t(array(rep(Y,n),c(M+1,n)))
-  dN_array=t(array(rep(dN,n),c(M+1,n)))
-  cov_matrix=(dN_i_Tj*Y_array - Y_i_Tj*dN_array)/(Y_array^2)
+  Y_array = t(array(rep(Y, n), c(M+1, n)))
+  dN_array = t(array(rep(dN, n), c(M+1, n)))
+  cov_matrix = (dN_i_Tj*Y_array - Y_i_Tj*dN_array) / (Y_array^2)
   
-  CH=rep(NA,M+1)
-  var_CH=rep(NA,M+1)
-  for(m in 1:(M+1))
-  {
-    CH[m]=sum((dN/Y)[1:m])
-    var_CH[m]=sum((apply(array(cov_matrix[,1:m],c(n,m)),1,sum))^2)
+  CH = rep(NA, M+1)
+  var_CH = rep(NA, M+1)
+  
+  for(m in 1:(M+1)) {
+    CH[m] = sum((dN/Y)[1:m])
+    var_CH[m] = sum((apply(array(cov_matrix[,1:m], c(n, m)), 1, sum))^2)
   }
-  var_CH_array=array(NA,c(M+1,M+1))
-  for(m in 1:(M+1))
-  {
-    var_CH_array[m:(M+1),m:(M+1)]=var_CH[m]
+  
+  var_CH_array = array(NA, c(M+1, M+1))
+  
+  for(m in 1:(M+1)) {
+    var_CH_array[m:(M+1), m:(M+1)] = var_CH[m]
   }
-  S_hat=exp(-CH)
-  robust_var=sum(array(time_int*S_hat,c(M+1,1))%*%array(time_int*S_hat,c(1,M+1))*var_CH_array)
-  list(var=robust_var)
+  
+  S_hat = exp(-CH)
+  robust_var = sum(array(time_int*S_hat, c(M+1, 1)) %*% 
+                     array(time_int*S_hat, c(1, M+1))*var_CH_array)
+  return(
+    list(
+      var = robust_var
+    )
+  )
+  
 }
+
 
 #######################
 #RMRL functions
 #######################
-plot_RMRL=function(X,delta,Tau,alpha=0.05,conservative_index=25,k=500,n.sim=1000)
-{
+plot_RMRL = function(X, delta, Tau, alpha = 0.05, conservative_index = 25, 
+                     k = 500, n.sim = 1000) {
   # INPUT
   # X=time to event
   # delta=event indicator
   # Tau=length of follow-up intervals of interest
 
-  n=length(X)
-  Y_X=rep(NA,n)
-  for(l in 1:n)
-  {
-    Y_X[l]=sum(as.numeric(X>=X[l]))
+  n = length(X)
+  Y_X = rep(NA, n)
+  
+  for(l in 1:n) {
+    Y_X[l] = sum(as.numeric(X >= X[l]))
   }
-  CB_tau=sort(X*delta)[n-conservative_index]
-  A=max(X) #end of study time
-  time_look=seq(from=0,to=min(CB_tau,A-Tau),by=Tau/2)
+  
+  CB_tau = sort(X*delta)[n - conservative_index]
+  A = max(X) #end of study time
+  time_look = seq(from = 0, to = min(CB_tau, A-Tau), by = Tau/2)
   
   cat("Times at which RMRL function is evaluated:")
   cat("\n")
   cat(time_look)
   
-  output=array(NA,c(length(time_look),2))
-  for(l in 1:length(time_look))
-  {
-    output[l,]=expectedlife_function(X,delta,Y_X,time_look[l],Tau,k)
+  output = array(NA, c(length(time_look), 2))
+  
+  for(l in 1:length(time_look)) {
+    output[l,] = expectedlife_function(X, delta, Y_X, time_look[l], Tau, k)
   } 
-  mean=output[,1]
-  Kappa=confidence_band_kappa(X,delta,Y_X,Tau,k,time_look)
-  chosen_q_alpha=get_q_alpha(Kappa,alpha,n.sim)
   
-  upper_CB=mean+chosen_q_alpha/sqrt(n)
-  lower_CB=mean-chosen_q_alpha/sqrt(n)
+  mean = output[,1]
+  Kappa = confidence_band_kappa(X, delta, Y_X, Tau, k, time_look)
+  chosen_q_alpha = get_q_alpha(Kappa, alpha, n.sim)
   
-  adj_upper_CB=apply(cbind(upper_CB,rep(Tau,length(time_look))),1,min)
+  upper_CB = mean + chosen_q_alpha / sqrt(n)
+  lower_CB = mean - chosen_q_alpha / sqrt(n)
   
-  par(mar=c(4,4.4,2,2) + 0.1)
-  plot(time_look,mean,type="l",ylab="RMRL", xlab="Time",ylim=c(min(lower_CB),max(upper_CB)),xaxs="i",yaxs="i", lwd=2, cex.lab=1.5, cex.axis=1.5)
+  adj_upper_CB = apply(cbind(upper_CB, rep(Tau, length(time_look))), 1, min)
+  
+  par(mar = c(4,4.4,2,2) + 0.1)
+  plot(time_look, mean, type = "l", ylab = "RMRL", xlab = "Time", 
+       ylim = c(min(lower_CB), max(upper_CB)), xaxs = "i", yaxs = "i", lwd = 2, 
+       cex.lab = 1.5, cex.axis = 1.5)
   lines(time_look, lower_CB, lty=2, lwd=2)
   lines(time_look, adj_upper_CB, lty=2, lwd=2)
   
-  list(RMRL=mean,lower_CB=lower_CB,upper_CB=upper_CB)
+  return(
+    list(
+      RMRL = mean, 
+      lower_CB = lower_CB, 
+      upper_CB = upper_CB
+    ) 
+  )
 }
 
-prosper_function=function(X,delta,Y_X,t_in,a_in)
-{
-  sum1=sum(as.numeric(X>t_in & X<=(t_in+a_in))*delta/Y_X)
+prosper_function = function(X, delta, Y_X, t_in, a_in) {
+  sum1 = sum(as.numeric(X > t_in & X <= (t_in + a_in))*delta/Y_X)
   exp(-sum1)
 }
 
-expectedlife_function=function(X,delta,Y_X,t_in,a,k)
-{
-  n=length(X)
+expectedlife_function = function(X, delta, Y_X, t_in, a, k) {
+  n = length(X)
   #construct parameters for trapazoidal method
-  a_i=seq(from=0,to=a,length.out=k+1)
-  d_i=c(a_i,a)-c(0,a_i)
-  b_i=(d_i[1:(k+1)]+d_i[2:(k+2)])/2
+  a_i = seq(from = 0, to = a, length.out = k+1)
+  d_i = c(a_i, a) - c(0, a_i)
+  b_i = (d_i[1:(k+1)] + d_i[2:(k+2)]) / 2
   
   #get values for prosper function
-  prosper_a_i=rep(NA,k+1)
-  for(i in 1:(k+1))
-  {
-    prosper_a_i[i]=prosper_function(X,delta,Y_X,t_in,a_i[i])
+  prosper_a_i = rep(NA, k+1)
+  
+  for(i in 1:(k+1)) {
+    prosper_a_i[i] = prosper_function(X, delta, Y_X, t_in, a_i[i])
   }
   
-  estimate=sum(b_i*prosper_a_i)
+  estimate = sum(b_i*prosper_a_i)
   
-  array1=array(as.numeric(X>t_in)*delta/(Y_X^2),c(n,k+1))*array(as.numeric(array(X,c(n,k+1))<=t(array(t_in+a_i,c(k+1,n)))),c(n,k+1))
-  array2=array(as.numeric(array(X,c(n,k+1))<=t(array(t_in+a_i,c(k+1,n)))),c(n,k+1))
-  inner_array=t(array1)%*%array2
+  array1 = array(as.numeric(X > t_in)*delta/(Y_X^2), 
+                 c(n, k+1))*array(as.numeric(array(X, c(n, k+1)) <= 
+                                               t(array(t_in + a_i, c(k+1, n)))), c(n, k+1))
   
-  array3=array(prosper_a_i*b_i,c(k+1,k+1))
-  array4=t(array(prosper_a_i*b_i,c(k+1,k+1)))
-  array5=array3*array4*inner_array
-  variance=sum(array5)
+  array2 = array(as.numeric(array(X, c(n, k+1)) <= 
+                              t(array(t_in + a_i, c(k+1, n)))), c(n, k+1))
+  inner_array = t(array1) %*% array2
+  
+  array3 = array(prosper_a_i*b_i, c(k+1, k+1))
+  array4 = t(array(prosper_a_i*b_i, c(k+1, k+1)))
+  array5 = array3*array4*inner_array
+  variance = sum(array5)
   
   #estimate
-  c(estimate,variance)
+  return(
+    c(estimate,variance)
+  )
 }
 
-confidence_band_kappa=function(X,delta,Y_X,a,k,t_k)
-{ 
-  n=length(X)
-  a_i=seq(from=0,to=a,length.out=k+1)
-  d_i=c(a_i,a)-c(0,a_i)
-  b_i=(d_i[1:(k+1)]+d_i[2:(k+2)])/2
+
+confidence_band_kappa = function(X, delta, Y_X, a, k, t_k) { 
+  n = length(X)
+  a_i = seq(from = 0, to = a, length.out = k+1)
+  d_i = c(a_i, a) - c(0, a_i)
+  b_i = (d_i[1:(k+1)] + d_i[2:(k+2)]) / 2
   
-  n_star=length(t_k)
+  n_star = length(t_k)
   
   #get values for prosper function for each time
-  prosper_a_i=array(NA,c(n_star,k+1))
-  for(i in 1:n_star)
-  {
-    for(j in 1:(k+1))
-    {
-      prosper_a_i[i,j]=prosper_function(X,delta,Y_X,t_k[i],a_i[j])
+  prosper_a_i = array(NA, c(n_star, k+1))
+  
+  for(i in 1:n_star) {
+    for(j in 1:(k+1)) {
+      prosper_a_i[i,j] = prosper_function(X, delta, Y_X, t_k[i], a_i[j])
     }
   }
   
-  kappa=array(NA,c(n_star,n_star))
-  for(i_star in 1:n_star)
-  {
-    for(j_star in 1:n_star)
-    {
+  kappa = array(NA, c(n_star, n_star))
+  
+  for(i_star in 1:n_star) {
+    for(j_star in 1:n_star) {
+      array1 = array(as.numeric(X > t_k[i_star])*as.numeric(X > t_k[j_star])*delta/(Y_X^2), c(n, k+1)) * 
+        array(as.numeric(array(X, c(n, k+1)) <= t(array(t_k[i_star] + a_i, c(k+1, n)))), c(n, k+1))
       
-      array1=array(as.numeric(X>t_k[i_star])*as.numeric(X>t_k[j_star])*delta/(Y_X^2),c(n,k+1))*array(as.numeric(array(X,c(n,k+1))<=t(array(t_k[i_star]+a_i,c(k+1,n)))),c(n,k+1))
-      array2=array(as.numeric(array(X,c(n,k+1))<=t(array(t_k[j_star]+a_i,c(k+1,n)))),c(n,k+1))
-      inner_array=t(array1)%*%array2
+      array2 = array(as.numeric(array(X, c(n, k+1)) <= t(array(t_k[j_star] + a_i, c(k+1, n)))), c(n, k+1))
+      inner_array = t(array1) %*% array2
       
-      array3=array(prosper_a_i[i_star,]*b_i,c(k+1,k+1))
-      array4=t(array(prosper_a_i[j_star,]*b_i,c(k+1,k+1)))
-      array5=array3*array4*inner_array
-      kappa[i_star,j_star]=n*sum(array5)
+      array3 = array(prosper_a_i[i_star,]*b_i, c(k+1, k+1))
+      array4 = t(array(prosper_a_i[j_star,]*b_i, c(k+1, k+1)))
+      array5 = array3*array4*inner_array
+      kappa[i_star,j_star] = n*sum(array5)
     }
   }
-  kappa
+  return(kappa)
 }
 
-get_q_alpha=function(kappa,alpha,n_sim)
-{
-  N=nrow(kappa) 
-  simulated_B=mvrnorm(n_sim,rep(0,N),kappa)
-  sim_datasets=apply(abs(simulated_B),1,max)
-  q_alpha=sort(sim_datasets)[n_sim*(1-alpha)]
-  q_alpha
+get_q_alpha = function(kappa, alpha, n_sim) {
+  N = nrow(kappa) 
+  simulated_B = mvrnorm(n_sim, rep(0, N), kappa)
+  sim_datasets = apply(abs(simulated_B), 1, max)
+  q_alpha = sort(sim_datasets)[n_sim*(1 - alpha)]
+  return(q_alpha)
 }
 
 #####################
