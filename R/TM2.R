@@ -21,10 +21,11 @@
 # library(survival)
 # library(MASS)
 
+
+
 #Main Function
-tau_restricted_mean_survival = function(X, delta, Tau, t, var_output = "proposed", 
-                                        plot = FALSE, alpha = 0.05, conservative_index = 25, 
-                                        k = 500, n.sim = 1000) { 
+TM2 = function(X, delta, Tau, t, var_output = "proposed", plot = FALSE, alpha = 0.05, 
+               conservative_index = 25, k = 500, n.sim = 1000) { 
   #CHECK FOR ERRORS IN INPUT
   
   if(sum(X < 0) > 0) {
@@ -420,9 +421,9 @@ get_q_alpha = function(kappa, alpha, n_sim) {
 # #read in example data
 # data=read.csv("example_data.csv")
 # max(data$X)
-# output=tau_restricted_mean_survival(X=data$X,delta=data$delta,Tau=12,t=seq(from=0,to=24,by=6),var_output="all",plot=TRUE,conservative_index=10)
+# output=TM2(X=data$X,delta=data$delta,Tau=12,t=seq(from=0,to=24,by=6),var_output="all",plot=TRUE,conservative_index=10)
 # 
-# output=tau_restricted_mean_survival(X=data$X,delta=data$delta,Tau=12,t=seq(from=0,to=24,by=6))
+# output=TM2(X=data$X,delta=data$delta,Tau=12,t=seq(from=0,to=24,by=6))
 # # ****************************************************************************************
 # #   Nonparametric estimation of restricted mean survival across multiple follow-up intervals
 # # ****************************************************************************************
@@ -431,7 +432,7 @@ get_q_alpha = function(kappa, alpha, n_sim) {
 # # Restricted Mean Survival Estimate= 10.9551
 # # Proposed Variance= 0.0277
 # 
-# output=tau_restricted_mean_survival(X=data$X,delta=data$delta,Tau=12,t=seq(from=0,to=24,by=6),var_output="independence")
+# output=TM2(X=data$X,delta=data$delta,Tau=12,t=seq(from=0,to=24,by=6),var_output="independence")
 # # ****************************************************************************************
 # #   Nonparametric estimation of restricted mean survival across multiple follow-up intervals
 # # ****************************************************************************************
@@ -440,7 +441,7 @@ get_q_alpha = function(kappa, alpha, n_sim) {
 # # Restricted Mean Survival Estimate= 10.9551
 # # Independent Variance= 0.0186
 # 
-# output=tau_restricted_mean_survival(X=data$X,delta=data$delta,Tau=12,t=seq(from=0,to=24,by=6),var_output="sandwich")
+# output=TM2(X=data$X,delta=data$delta,Tau=12,t=seq(from=0,to=24,by=6),var_output="sandwich")
 # # ****************************************************************************************
 # #   Nonparametric estimation of restricted mean survival across multiple follow-up intervals
 # # ****************************************************************************************
