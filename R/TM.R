@@ -5,11 +5,10 @@
 
 #' Helper function for sums
 
-sum_function=function(X)
-{
-  temp=array(X,c(length(X),length(X)))
-  lowerTriangle(temp,diag=F)=0
-  apply(temp,2,sum)
+sum_function = function(X) {
+  temp = array(X, c(length(X), length(X)))
+  lowerTriangle(temp, diag = F) = 0
+  apply(temp, 2, sum)
 }
 
 #' Format observed data for method described in Tayob, Murray 2015
