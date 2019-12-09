@@ -243,8 +243,7 @@ RMRL_function = function(data_format, Tau, t) {
 #'
 #'
 
-two_sample_recurrent_events_test = function(X, delta, Z, Group, Tau, t, 
-                                            method="average", plot=FALSE) {
+TM = function(X, delta, Z, Group, Tau, t, method="average", plot=FALSE) {
   ############format observed data for our method
   # INPUT
   # X=vector containing observed time to terminating event
