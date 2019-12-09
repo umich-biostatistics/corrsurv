@@ -390,8 +390,7 @@ TM = function(X, delta, Z, Group, Tau, t, method="average", plot=FALSE) {
 #'   \item{status}{status indicator: 1 if event occured, 0 if censored}
 #' }
 
-format_data_AG=function(X, delta, Z_star)
-{
+format_data_AG = function(X, delta, Z_star) {
   ############format observed data for Andersen-Gill method
   #load data
   n = length(X)
@@ -592,9 +591,12 @@ GL_test_stat = function(p_GL, time, data1_format, data2_format) {
   test_stat = sqrt(n1*n2 / (n1+n2))*Q_WCT / sqrt(var_Q_WCT)
   test_stat_p = 2*(1 - pnorm(abs(test_stat)))
   
-  list(
-    test_stat_p = test_stat_p
+  return(
+    list(
+      test_stat_p = test_stat_p
     )
+  )
+  
 }
 
 
