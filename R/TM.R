@@ -31,8 +31,7 @@ sum_function = function(X) {
 #'
 #'
 
-format_data_ourmethod=function(X,delta,Z,t)
-{
+format_data_ourmethod = function(X, delta, Z, t) {
   ############format observed data for our method
   # INPUT
   # X=vector containing observed time to terminating event
@@ -40,34 +39,35 @@ format_data_ourmethod=function(X,delta,Z,t)
   # Z=array of times to recurrent events. Number of columns corresponds to maximum number of recurrent events observed for a patient
   # t=vector containing start times of follow-up windows chosen
   
-  Z_star=Z #rename data
-  n=length(X)
-  b=length(t)
+  Z_star = Z #rename data
+  n = length(X)
+  b = length(t)
   
-  X_tk=array(NA,c(n,b))
-  delta_tk=array(NA,c(n,b))
-  for(k in 1:b)
-  {
-    Z_star_k=Z_star-t[k]
-    Z_star_k[Z_star_k<0]=NA #recurrent events observed before time t[k]
+  X_tk = array(NA, c(n, b))
+  delta_tk = array(NA, c(n, b))
+  
+  for(k in 1:b) {
+    Z_star_k = Z_star - t[k]
+    Z_star_k[Z_star_k < 0] = NA #recurrent events observed before time t[k]
     
-    X_k=X-t[k]
-    delta_k=delta
-    delta_k[X_k<0]=0 #terminating events observed before time t[k]->patient censored at 0
-    X_k[X_k<0]=0
+    X_k = X - t[k]
+    delta_k = delta
+    delta_k[X_k < 0] = 0 #terminating events observed before time t[k]->patient censored at 0
+    X_k[X_k < 0] = 0
     
-    X_Z_star_k=apply(cbind(Z_star_k,X_k),1,min,na.rm=T) #time to next recurrent event/terminating event
-    X_tk[,k]=X_Z_star_k
+    X_Z_star_k = apply(cbind(Z_star_k, X_k), 1, min, na.rm = T) #time to next recurrent event/terminating event
+    X_tk[,k] = X_Z_star_k
     
-    delta_k2=as.numeric(X_Z_star_k<X_k) #=1 if event observed was a recurrent event
-    delta_k2[X_Z_star_k==X_k]=delta_k[X_Z_star_k==X_k] #=delta for terminating event
-    delta_tk[,k]=delta_k2
+    delta_k2 = as.numeric(X_Z_star_k < X_k) #=1 if event observed was a recurrent event
+    delta_k2[X_Z_star_k == X_k] = delta_k[X_Z_star_k == X_k] #=delta for terminating event
+    delta_tk[,k] = delta_k2
   }
-  t_k=rep(t,times=rep(n,length(t)))
-  X_tk=array(X_tk,c(n*b,1))
-  delta_tk=array(delta_tk,c(n*b,1))
-  ID=rep(seq(1:n),b)
-  list(ID=ID,X_tk=X_tk,delta_tk=delta_tk,t_k=t_k,n=n)
+  
+  t_k = rep(t, times = rep(n, length(t)))
+  X_tk = array(X_tk, c(n*b, 1))
+  delta_tk = array(delta_tk, c(n*b, 1))
+  ID = rep(seq(1:n), b)
+  list(ID = ID, X_tk = X_tk, delta_tk = delta_tk, t_k = t_k, n = n)
   # OUTPUT
   # ID=vector containing numeric identifying numbers for each patient corresponding to row numbers of input data
   # X_tk=vector containing observed time to combined end-point for each follow-up window
@@ -90,8 +90,7 @@ format_data_ourmethod=function(X,delta,Z,t)
 #'   \item{var}{empirical variance estimate of mean}
 #' }
 
-get_mu_hat_star_tau=function(X_km,delta_km,Tau,t)
-{
+get_mu_hat_star_tau = function(X_km, delta_km, Tau, t) {
   ############ Get estimate and variance of estimate
   # INPUT
   # X_km=vector containing observed time to combined end-point for each follow-up window
@@ -99,44 +98,45 @@ get_mu_hat_star_tau=function(X_km,delta_km,Tau,t)
   # Tau=length of follow-up intervals of interest
   # t=vector containing start times of follow-up windows chosen
   
-  b=length(t)
-  n=length(X_km)/b
-  X=array(X_km,c(n,b))
-  delta=array(delta_km,c(n,b))
+  b = length(t)
+  n = length(X_km) / b
+  X = array(X_km, c(n, b))
+  delta = array(delta_km, c(n, b))
   
-  observed_events=sort(X*delta)
-  T=unique(c(observed_events[observed_events<=Tau],Tau))
-  M=length(T)-1
-  T_array=round(t(array(T[1:M],c(M,b))),6)
+  observed_events = sort(X*delta)
+  T = unique(c(observed_events[observed_events <= Tau], Tau))
+  M = length(T) - 1
+  T_array = round(t(array(T[1:M], c(M, b))), 6)
   
-  dN_i=array(NA,c(n,M))
-  Y_i=array(NA,c(n,M))
-  for(j in 1:n)
-  {
-    temp1=array(round(X[j,],6),c(b,M))
-    temp2=array(delta[j,],c(b,M))
-    dN_i[j,]=apply((temp1==T_array & temp2==1),2,sum) 
-    Y_i[j,]=apply(temp1>=T_array,2,sum)
+  dN_i = array(NA, c(n, M))
+  Y_i = array(NA, c(n, M))
+  
+  for(j in 1:n) {
+    temp1 = array(round(X[j,], 6), c(b, M))
+    temp2 = array(delta[j,], c(b, M))
+    dN_i[j,] = apply((temp1 == T_array & temp2 == 1), 2, sum) 
+    Y_i[j,] = apply(temp1 >= T_array, 2, sum)
   }
-  dN=apply(dN_i,2,sum)
-  Y=apply(Y_i,2,sum)
   
-  time_int=T[2:(M+1)]-T[1:M]
-  temp=array(dN/Y,c(M,M))
-  lowerTriangle(temp,diag=F)=0
-  CH=apply(temp,2,sum)
-  S_hat=exp(-CH)
-  mean=sum(time_int*S_hat)
+  dN = apply(dN_i, 2, sum)
+  Y = apply(Y_i, 2, sum)
   
-  q=dN/Y
-  z_i_q=t(t(dN_i-t(q*t(Y_i)))*(n/Y))
-  temp3=t(apply(z_i_q,1,sum_function))
-  time_int_array=t(array(time_int,c(M,n)))
-  S_hat_array=t(array(S_hat,c(M,n)))
-  z_i_ATau=apply(time_int_array*S_hat_array*temp3,1,sum)
-  williams_var=var(z_i_ATau)/n
+  time_int = T[2:(M+1)] - T[1:M]
+  temp = array(dN/Y, c(M, M))
+  lowerTriangle(temp, diag = F) = 0
+  CH = apply(temp, 2, sum)
+  S_hat = exp(-CH)
+  mean = sum(time_int*S_hat)
   
-  list(mean=mean, var=williams_var)
+  q = dN / Y
+  z_i_q = t(t(dN_i - t(q*t(Y_i)))*(n/Y))
+  temp3 = t(apply(z_i_q, 1, sum_function))
+  time_int_array = t(array(time_int, c(M, n)))
+  S_hat_array = t(array(S_hat, c(M, n)))
+  z_i_ATau = apply(time_int_array*S_hat_array*temp3, 1, sum)
+  williams_var = var(z_i_ATau) / n
+  
+  list(mean = mean, var = williams_var)
   # OUTPUT
   # mean=estimate of overall tau restricted mean survival
   # var=empirical variance estimate of mean
@@ -159,44 +159,43 @@ get_mu_hat_star_tau=function(X_km,delta_km,Tau,t)
 #' }
 #'
 
-RMRL_function=function(data_format,Tau,t)
-{
+RMRL_function = function(data_format, Tau, t) {
   ################## Get RMRL, area under RMRL and variance of area under RMRL
   # INPUT
   # data_format=output of function "format_data_ourmethod"
   # Tau=length of follow-up intervals of interest
   # t=vector containing start times of follow-up windows chosen
-  b=length(t)
-  data_tk=data.frame(data_format)
-  time=unique(sort(data_tk$X_tk*as.numeric(data_tk$X_tk<=Tau)))
-  M_time=length(time)
-  time_int_star=time[2:M_time]-time[1:(M_time-1)]
-  RMRL=rep(NA,b)
-  Z_i_tk=NULL
-  for(i in 1:b)
-  {
-    data_tk_subset=subset(data_tk, t_k==t[i])
-    n=nrow(data_tk_subset)
-    X=data_tk_subset$X_tk
-    delta=data_tk_subset$delta_tk
+  b = length(t)
+  data_tk = data.frame(data_format)
+  time = unique(sort(data_tk$X_tk*as.numeric(data_tk$X_tk <= Tau)))
+  M_time = length(time)
+  time_int_star = time[2:M_time] - time[1:(M_time-1)]
+  RMRL = rep(NA, b)
+  Z_i_tk = NULL
+  
+  for(i in 1:b) {
+    data_tk_subset = subset(data_tk, t_k == t[i])
+    n = nrow(data_tk_subset)
+    X = data_tk_subset$X_tk
+    delta = data_tk_subset$delta_tk
     
     #calculate components of variance of area under RMRL
-    time_array=t(array(time,c(M_time,n)))
-    dN_i_tk=array(as.numeric(X==time_array & delta==1),c(n,M_time))
-    Y_i_tk=array(as.numeric(X>=time_array),c(n,M_time))
+    time_array = t(array(time, c(M_time, n)))
+    dN_i_tk = array(as.numeric(X == time_array & delta == 1), c(n, M_time))
+    Y_i_tk = array(as.numeric(X >= time_array), c(n, M_time))
     
-    dN_tk=apply(dN_i_tk,2,sum)
-    Y_tk=apply(Y_i_tk,2,sum)
-    lambda_tk=dN_tk/Y_tk
-    temp=array(lambda_tk,c(M_time,M_time))
-    lowerTriangle(temp,diag=F)=0
-    S_tk_m=exp(-apply(temp,2,sum))
-    mean=sum(time_int_star*S_tk_m[1:(M_time-1)])
-    RMRL[i]=mean
+    dN_tk = apply(dN_i_tk, 2, sum)
+    Y_tk = apply(Y_i_tk, 2, sum)
+    lambda_tk = dN_tk / Y_tk
+    temp = array(lambda_tk, c(M_time, M_time))
+    lowerTriangle(temp, diag = F) = 0
+    S_tk_m = exp(-apply(temp, 2, sum))
+    mean = sum(time_int_star*S_tk_m[1:(M_time-1)])
+    RMRL[i] = mean
     
-    temp1=t(array(lambda_tk,c(M_time,n)))
-    temp2=t(array(Y_tk/n,c(M_time,n)))
-    temp3=(dN_i_tk-temp1*Y_i_tk)/temp2
+    temp1 = t(array(lambda_tk, c(M_time, n)))
+    temp2 = t(array(Y_tk/n, c(M_time, n)))
+    temp3 = (dN_i_tk - temp1*Y_i_tk)/temp2
     Z_i_tk_m=t(apply(temp3,1,sum_function))
     temp4=t(array(S_tk_m,c(M_time,n)))
     temp5=(temp4*Z_i_tk_m)[,1:(M_time-1)]
