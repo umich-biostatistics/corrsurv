@@ -5,8 +5,6 @@
 
 #' Helper function for column sums of upper trianglular matrix
 #' 
-#' @examples
-#' 
 #' @author Nabihah Tayob
 #' 
 #' @references Tayob, N. and Murray, S., 2014. Nonparametric tests of treatment 
@@ -91,6 +89,8 @@ format_data_ourmethod = function(X, delta, Z, t) {
 }
 
 #' Get estimate and variance of estimate for method described in Tayob, Murray 2015
+#' 
+#' This function is used internally when TM() is called.
 #'
 #' @param X_km vector containing observed time to combined end-point for each follow-up window
 #' @param delta_tk vector containing combined end-point event indicator. 1 if 
@@ -167,7 +167,8 @@ get_mu_hat_star_tau = function(X_km, delta_km, Tau, t) {
 
 #' Get RMRL, area under RMRL and variance of area under RMRL
 #'
-#' RMRL is the restricted mean residual life function evaluated at times defined by t
+#' RMRL is the restricted mean residual life function evaluated at times defined by t.
+#' This function is used internally when TM() is called.
 #'
 #' @param data_format output of function "format_data_ourmethod"
 #' @param Tau length of follow-up intervals of interest
@@ -321,22 +322,6 @@ TM = function(X, delta, Z, Group, Tau, t, method = "average", plot = FALSE) {
     test_stat_p = 2*(1 - pnorm(test_stat))
     mean12 = c(results1$area_under_RMRL, results2$area_under_RMRL)
     var12 = c(results1$var_area_under_RMRL, results2$var_area_under_RMRL)   
-    
-    if(plot) {
-      RMRL1 = results1$RMRL
-      RMRL2 = results2$RMRL
-      xadj = Tau/50
-      yadj1 = max(RMRL1, RMRL2)/20
-      yadj2 = max(RMRL1, RMRL2)/50
-      matplot(cbind(t, t), cbind(RMRL1, RMRL2), type = "l", xaxs = "i", xaxt = "n", 
-              yaxs = "i", xlab = "Time", ylab= "RMRL", xlim = c(t[1] - xadj, t[length(t)] + xadj), 
-              ylim = c(min(RMRL1, RMRL2) - yadj1, max(RMRL1, RMRL2) + yadj2))
-      points(t, RMRL1, pch = 20, cex = 1, col = "black")
-      points(t, RMRL2, pch = 20, cex = 1, col = "red")
-      axis(1, at = t, labels = t)
-      legend("bottomright", c("Group 1", "Group 2"), col = c("black", "red"), 
-             lty = c(1, 2), bty = "n")
-    }
   }
   
   result = 
@@ -363,6 +348,7 @@ TM = function(X, delta, Z, Group, Tau, t, method = "average", plot = FALSE) {
 
 #' Print a TM object
 #' 
+#' @param object an object of class 'TM'
 #' 
 
 print.TM = function(object) {
@@ -387,7 +373,6 @@ print.TM = function(object) {
                                     paste("[", t[k], ",", t[k] + Tau, "]"), "     ")
   }
   
-  #PRINT OUTPUT
   cat("************Two-Sample Test for combined end-point across multiple follow-up windows************")
   cat("\n")
   cat("Reference Paper: Nonparametric Tests of Treatment Effect for a Recurrent Event process that Terminates- N Tayob and S Murray")
@@ -439,6 +424,40 @@ print.TM = function(object) {
   cat(paste("Test-statistic=", round(test_stat, 5), ", p-value", test_stat_p_print))
   
 }
+
+#' Plot a TM object
+#' 
+#' @param object an object of class 'TM'
+#' 
+
+plot.TM = function(object) {
+  
+  args = object$args
+  method = args$method
+  t = args$t
+  Tau = args$Tau
+  results1 = object$results1
+  results2 = object$results2
+  
+  if(method != "area") { stop("Plotting is only implemented for the 'area' method") }
+  
+  RMRL1 = results1$RMRL
+  RMRL2 = results2$RMRL
+  xadj = Tau/50
+  yadj1 = max(RMRL1, RMRL2)/20
+  yadj2 = max(RMRL1, RMRL2)/50
+  matplot(cbind(t, t), cbind(RMRL1, RMRL2), type = "l", xaxs = "i", xaxt = "n", 
+          yaxs = "i", xlab = "Time", ylab= "RMRL", xlim = c(t[1] - xadj, t[length(t)] + xadj), 
+          ylim = c(min(RMRL1, RMRL2) - yadj1, max(RMRL1, RMRL2) + yadj2))
+  points(t, RMRL1, pch = 20, cex = 1, col = "black")
+  points(t, RMRL2, pch = 20, cex = 1, col = "red")
+  axis(1, at = t, labels = t)
+  legend("bottomright", c("Group 1", "Group 2"), col = c("black", "red"), 
+          lty = c(1, 2), bty = "n")
+  
+}
+
+
 
 #' Format observed data for Andersen-Gill method
 #'
