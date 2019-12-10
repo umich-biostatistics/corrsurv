@@ -1,0 +1,95 @@
+---
+ title: "*Vignette* for `pairsurv`"
+ author: "Michael Kleinsasser"
+ date: "December 20, 2019"
+ geometry: margin=2cm
+ output: 
+  pdf_document: 
+    toc: no
+ header-includes:
+  - \usepackage{booktabs}
+  - \usepackage{hyperref}
+  - \usepackage{float}
+  - \usepackage{caption}
+  - \floatplacement{figure}{H}
+---
+
+```{r, echo=F, warning=F, message=F, cache=T, include=F, eval=T}
+options(digits = 3)
+```
+
+
+## Introduction
+ 
+This vignette presents a step-by-step guide to the analysis of paired survival data
+using methods from the following papers:
+
+#### Method 1
+
+Murray, Susan. Nonparametric Rank-Based Methods for Group Sequential Monitoring of 
+Paired Censored Survival Data. 2000. Biometrics, 56, pp. 984-990.
+
+Use the `pairtest()` function to use the methods contained in this paper.
+
+#### Method 2
+
+Tayob, N. and Murray, S., 2014. Nonparametric tests of treatment 
+effect based on combined endpoints for mortality and recurrent events. Biostatistics, 
+16(1), pp.73-83.
+
+Use the `TM()` function to use the methods contained in this paper. 
+
+#### Method 3
+
+Tayob, N. and Murray, S., 2016. Nonparametric restricted mean analysis across multiple 
+follow-up intervals. Statistics & probability letters, 109, pp.152-158.
+
+Use the `TM2()` function to use the methods contained in this paper.
+
+
+## Install
+ 
+First, install and load the `adaptBayes` package and other necessary packages:
+
+```{r, echo=T, warning=F, message=F, cache=T, include=T, eval=T}
+if(!require(pairsurv)) {
+  library(devtools)
+  install_github('umich-biostatistics/pairsurv') 
+}
+```
+
+## Data
+
+Two simulated data sets are included in the package. The data set `current` is used whenever `curr_method = "current"` and `historical` is used whenever `curr_method = "historical"`. Here, we load the data sets into memory.
+
+```{r, echo=T, warning=F, message=F, cache=T, include=T, eval=T}
+data("pairdata")
+data("pairdata2")
+```
+
+## Results
+
+```{r, echo=F, warning=F, message=F, cache=T, include=F, eval=T}
+options(digits = 3)
+```
+
+
+#### pairtest(), Murray (2000)
+
+```{r, echo=T, warning=F, message=F, cache=T, include=T, eval=T}
+
+```
+
+
+#### TM(), Tayob, Murray (2014)
+
+```{r, echo=T, warning=F, message=F, cache=T, include=T, eval=T}
+
+```
+
+
+#### TM2(), Tayob, Murray (2016)
+
+```{r, echo=T, warning=F, message=F, cache=T, include=T, eval=T}
+
+```
