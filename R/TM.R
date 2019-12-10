@@ -3,7 +3,15 @@
 #library(MASS)
 #library(gdata)
 
-#' Helper function for sums
+#' Helper function for column sums of upper trianglular matrix
+#' 
+#' @examples
+#' 
+#' @author Nabihah Tayob
+#' 
+#' @references Tayob, N. and Murray, S., 2014. Nonparametric tests of treatment 
+#' effect based on combined endpoints for mortality and recurrent events. Biostatistics, 
+#' 16(1), pp.73-83.
 
 sum_function = function(X) {
   temp = array(X, c(length(X), length(X)))
@@ -11,12 +19,15 @@ sum_function = function(X) {
   apply(temp, 2, sum)
 }
 
-#' Format observed data for method described in Tayob, Murray 2015
-#'
+#' Format observed data for TM (Tayob, Murray method)
+#' 
+#' Formats the data for the method described in Tayob, Murray 2015. This function
+#' is for internal use by TM().
+#' 
 #' @param X vector containing observed time to terminating event
 #' @param delta vector that is 1 if terminating event is observed and 0 if patient 
 #' is censored
-#' @param z of times to recurrent events. Number of columns corresponds to maximum 
+#' @param Z array of times to recurrent events. Number of columns corresponds to maximum 
 #' number of recurrent events observed for a patient
 #' @param t vector containing start times of follow-up windows chosen
 #'
@@ -28,16 +39,19 @@ sum_function = function(X) {
 #'   \item{t_k}{vector containing start times of corresponding follow-up window}
 #'   \item{n}{number of patients in dataset}
 #' }
+#' 
+#' @examples
+#' 
+#' 
+#' @author Nabihah Tayob
+#' 
+#' @references Tayob, N. and Murray, S., 2014. Nonparametric tests of treatment 
+#' effect based on combined endpoints for mortality and recurrent events. Biostatistics, 
+#' 16(1), pp.73-83.
 #'
 #'
 
 format_data_ourmethod = function(X, delta, Z, t) {
-  ############format observed data for our method
-  # INPUT
-  # X=vector containing observed time to terminating event
-  # delta=vector that is 1 if terminating event is observed and 0 if patient is censored
-  # Z=array of times to recurrent events. Number of columns corresponds to maximum number of recurrent events observed for a patient
-  # t=vector containing start times of follow-up windows chosen
   
   Z_star = Z #rename data
   n = length(X)
@@ -89,6 +103,14 @@ format_data_ourmethod = function(X, delta, Z, t) {
 #'   \item{mean}{estimate of overall tau restricted mean survival}
 #'   \item{var}{empirical variance estimate of mean}
 #' }
+#' 
+#' @examples
+#' 
+#' @author Nabihah Tayob
+#' 
+#' @references Tayob, N. and Murray, S., 2014. Nonparametric tests of treatment 
+#' effect based on combined endpoints for mortality and recurrent events. Biostatistics, 
+#' 16(1), pp.73-83.
 
 get_mu_hat_star_tau = function(X_km, delta_km, Tau, t) {
   ############ Get estimate and variance of estimate
@@ -157,7 +179,14 @@ get_mu_hat_star_tau = function(X_km, delta_km, Tau, t) {
 #'   \item{area_under_RMRL}{area under RMRL function evaluated at times t}
 #'   \item{var_area_under_RMRL}{empirical variance of estimate area_under_RMRL}
 #' }
+#' 
+#' @examples
+#' 
+#' @author Nabihah Tayob
 #'
+#' @references Tayob, N. and Murray, S., 2014. Nonparametric tests of treatment 
+#' effect based on combined endpoints for mortality and recurrent events. Biostatistics, 
+#' 16(1), pp.73-83.
 
 RMRL_function = function(data_format, Tau, t) {
   ################## Get RMRL, area under RMRL and variance of area under RMRL
@@ -222,15 +251,22 @@ RMRL_function = function(data_format, Tau, t) {
 }  
 
 #' Two-sample recurrent events test
-#'
+#' 
+#' Perform the Tayob, Murray two-sample recurrent events test described in 
+#' Tayob, N. and Murray, S., 2014. Nonparametric tests of treatment 
+#' effect based on combined endpoints for mortality and recurrent events. Biostatistics, 
+#' 16(1), pp.73-83.
+#' 
 #' @param x vector containing observed time to terminating event
 #' @param delta vector that is 1 if terminating event is observed and 0 if patient is censored
 #' @param Z array of times to recurrent events. Number of columns corresponds to 
 #' maximum number of recurrent events observed for a patient
 #' @param Group vector indicating which group each patient belongs to
-#' @param Tau
+#' @param Tau upper limit of integration (cannot be greater than largest follow-up 
+#' time, cannot be negative)
 #' @param t vector containing start times of follow-up windows chosen
-#' @param method c("average", "area")
+#' @param method Choose "average" for mean difference test or "area" for area between
+#' the RMRL curves
 #' @param plot TRUE if plots to be generated
 #' 
 #' @return A \code{list} object which contains
@@ -240,17 +276,18 @@ RMRL_function = function(data_format, Tau, t) {
 #'   \item{test_stat}{test statistic of two-sample test}
 #'   \item{test_stat_p}{p-value of two-sample test}
 #' }
+#' 
+#' @examples
 #'
-#'
+#' @author Nabihah Tayob
+#' 
+#' @references Tayob, N. and Murray, S., 2014. Nonparametric tests of treatment 
+#' effect based on combined endpoints for mortality and recurrent events. Biostatistics, 
+#' 16(1), pp.73-83.
+#' 
+#' 
 
-TM = function(X, delta, Z, Group, Tau, t, method="average", plot=FALSE) {
-  ############format observed data for our method
-  # INPUT
-  # X=vector containing observed time to terminating event
-  # delta=vector that is 1 if terminating event is observed and 0 if patient is censored
-  # Z=array of times to recurrent events. Number of columns corresponds to maximum number of recurrent events observed for a patient
-  # Group=vector indicating which group each patient belongs to
-  # t=vector containing start times of follow-up windows chosen
+TM = function(X, delta, Z, Group, Tau, t, method = "average", plot = FALSE) {
   
   Group_id = unique(Group)
   formatted_group1_data = format_data_ourmethod(X = X[Group == Group_id[1]],
@@ -389,6 +426,12 @@ TM = function(X, delta, Z, Group, Tau, t, method="average", plot=FALSE) {
 #'   \item{T_stop}{Stop time}
 #'   \item{status}{status indicator: 1 if event occured, 0 if censored}
 #' }
+#' 
+#' @author Nabihah Tayob
+#' 
+#' @references Tayob, N. and Murray, S., 2014. Nonparametric tests of treatment 
+#' effect based on combined endpoints for mortality and recurrent events. Biostatistics, 
+#' 16(1), pp.73-83.
 
 format_data_AG = function(X, delta, Z_star) {
   ############format observed data for Andersen-Gill method
@@ -438,7 +481,12 @@ format_data_AG = function(X, delta, Z_star) {
 #' \itemize {
 #'   \item{test_stat_p}{p-value for the test}
 #' }
+#' 
+#' @author Nabihah Tayob
 #'
+#' @references Tayob, N. and Murray, S., 2014. Nonparametric tests of treatment 
+#' effect based on combined endpoints for mortality and recurrent events. Biostatistics, 
+#' 16(1), pp.73-83.
 
 AG_test_stat = function(data1_format, data2_format) {
   #Andersen-Gill model based two-sample test
@@ -473,7 +521,12 @@ AG_test_stat = function(data1_format, data2_format) {
 #'   \item{dpsi_i}{}
 #'   \item{dM_D_i}{}
 #' }
+#' 
+#' @author Nabihah Tayob
 #'
+#' @references Tayob, N. and Murray, S., 2014. Nonparametric tests of treatment 
+#' effect based on combined endpoints for mortality and recurrent events. Biostatistics, 
+#' 16(1), pp.73-83.
 
 format_data_GL = function(X, delta, Z_star, time) {
   ############format observed data for Ghosh and Lin method
@@ -547,6 +600,12 @@ get_dN_for_i = function(X1) {
 #' \itemize{
 #'   \item{test_stat_p}{P-value for test statistic}
 #' }
+#' 
+#' @author Nabihah Tayob
+#' 
+#' @references Tayob, N. and Murray, S., 2014. Nonparametric tests of treatment 
+#' effect based on combined endpoints for mortality and recurrent events. Biostatistics, 
+#' 16(1), pp.73-83.
 
 GL_test_stat = function(p_GL, time, data1_format, data2_format) {
   #Load data
