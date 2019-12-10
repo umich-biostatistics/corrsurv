@@ -3,7 +3,12 @@ Get started with pairsurv
 
 ## About
 
-This package contains tools for analyzing paired survival data.
+This package contains tools for analyzing paired survival data. Three
+methods are contained for the assessment of treatment effects in paired
+survival data are approached using the methods of Murray (2000), Tayob,
+Murray (2015), and Tayob, Murray (2016). The details of these methods
+are introduced below. See the package documentation for additional
+details.
 
 ## Install
 
@@ -21,6 +26,10 @@ devtools::install_github("umich-biostatistics/pairsurv")
 ```
 
 ## Usage
+
+#### Method of Murray, 2000 (pairtest)
+
+For the method of Murray (2000), use the `pairtest()` function.
 
 Here is an example R script using the `pairdata.csv` data set.
 
@@ -72,3 +81,7 @@ nstuff=((3711*3711)/(3711+3711))^(.5)
 (yls.upper2=yls.diff+1.96*sqrt(eyeresults$yls.nopair.type.var)/nstuff)
 (yls.lower2=yls.diff-1.96*sqrt(eyeresults$yls.nopair.type.var)/nstuff)
 ```
+
+#### Method of Tayob and Murray, 2015 (TM)
+
+#### Method of Tayob and Murray, 2016 (TM2)

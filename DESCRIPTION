@@ -1,6 +1,6 @@
 Package: pairsurv
 Title: Tests for paired survival data
-Version: 0.0.1
+Version: 0.1.0
 Authors@R: c(
     person(given = "Michael",
            family = "Kleinsasser",
@@ -15,4 +15,11 @@ License: What license it uses
 NeedsCompilation: yes
 Encoding: UTF-8
 LazyData: true
+License: MIT
+Depends: 
+    R (>= 3.4.0)
+Imports: 
+    MASS,
+    survival
+    gdata
 RoxygenNote: 6.1.99.9001
