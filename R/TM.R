@@ -289,6 +289,8 @@ RMRL_function = function(data_format, Tau, t) {
 
 TM = function(X, delta, Z, Group, Tau, t, method = "average", plot = FALSE) {
   
+  args = match.call()
+  
   Group_id = unique(Group)
   formatted_group1_data = format_data_ourmethod(X = X[Group == Group_id[1]],
                                                 delta = delta[Group == Group_id[1]],
@@ -336,6 +338,45 @@ TM = function(X, delta, Z, Group, Tau, t, method = "average", plot = FALSE) {
              lty = c(1, 2), bty = "n")
     }
   }
+  
+  result = 
+    list(
+      Mean = mean12, 
+      Var = var12, 
+      test_stat = test_stat, 
+      test_stat_p = test_stat_p,
+      args = args,
+      Group_id = Group_id,
+      formatted_group1_data = formatted_group1_data,
+      formatted_group2_data = formatted_group2_data,
+      results1 = results1,
+      results2 = results2
+    )
+  
+  attr(result, "class") = "TM"
+  
+  return(
+    result
+  )
+
+}
+
+#' Print a TM object
+#' 
+#' 
+
+print.TM = function(object) {
+  
+  test_stat_p = object$test_stat_p
+  args = object$args
+  t = args$t
+  Tau = args$Tau
+  method = args$method
+  Group_id = object$Group_id
+  formatted_group1_data = object$formatted_group1_data
+  formatted_group2_data = object$formatted_group2_data
+  results1 = object$results1
+  results2 = object$results2
   
   test_stat_p_print = paste("=", round(test_stat_p, 5))
   if(round(test_stat_p, 5) == 0) { test_stat_p_print = "<0.00001" }
@@ -397,19 +438,6 @@ TM = function(X, delta, Z, Group, Tau, t, method = "average", plot = FALSE) {
   }
   cat(paste("Test-statistic=", round(test_stat, 5), ", p-value", test_stat_p_print))
   
-  return(
-    list(
-      Mean = mean12, 
-      Var = var12, 
-      test_stat = test_stat, 
-      test_stat_p = test_stat_p
-      )
-    )
-  # OUTPUT
-  # Mean= vector containing sample estimates of overall tau-restricted mean survival in each group
-  # Var= vector containing empirical variance of estimates of overall tau-restricted mean survival in each group
-  # test_stat= test statistic of two-sample test
-  # test_stat_p= p-value of two-sample test
 }
 
 #' Format observed data for Andersen-Gill method
