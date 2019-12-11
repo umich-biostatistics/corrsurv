@@ -1,6 +1,5 @@
 ---
  title: "*Vignette* for `pairsurv`"
- author: "Michael Kleinsasser"
  date: "December 20, 2019"
  geometry: margin=2cm
  output: 
@@ -49,7 +48,7 @@ Use the `TM2()` function to use the methods contained in this paper.
 
 ## Install
  
-First, install and load the `adaptBayes` package and other necessary packages:
+First, install and load the `pairsurv` package and other necessary packages:
 
 ```{r, echo=T, warning=F, message=F, cache=T, include=T, eval=T}
 if(!require(pairsurv)) {
@@ -76,15 +75,110 @@ options(digits = 3)
 
 #### pairtest(), Murray (2000)
 
+##### Example 1: Analysis of package data set `pairdata`.
+
+```{r, echo=T, warning=F, message=F, cache=T, include=T, eval=T}
+head(pairdata)
+
+eyeresults = pairtest(pairdata$x1, pairdata$delta1, pairdata$x2, pairdata$delta2, 3711)
+
+print(eyeresults)
+
+(integration_upper_limit= eyeresults$upperlim)
+
+(logrank_statistic=eyeresults$lgrk.stat.p)
+
+(logrank_statistic_p=2*(pnorm(logrank_statistic, lower.tail=T)) )#since negative statistic
+
+(gehan_statistic=eyeresults$gehan.stat.p)
+
+(gehan_statistic_p=2*(pnorm(gehan_statistic, lower.tail=T)) )#since negative statistic
+
+(yls_statistic=eyeresults$yls.stat.p)
+
+(yls_statistic_p=2*(pnorm(yls_statistic, lower.tail=F))) #since positive statistic
+
+(pepe_flem_statistic=eyeresults$pf.stat.p)
+
+(pepe_flem_statistic_p=2*(pnorm(pepe_flem_statistic, lower.tail=F))) #since positive statistic
+
+(logrank_assuming_indep=eyeresults$ lgrk.nopair.stat.p)
+(logrank_assuming_indep_p=2*(pnorm(logrank_assuming_indep, lower.tail=T)) )#since negative statistic
+(gehan_assuming_indep= eyeresults$gehan.nopair.stat.p)
+(gehan_assuming_indep_p=2*(pnorm(gehan_assuming_indep, lower.tail=T))) #since negative statistic
+(yls_assuming_indep= eyeresults$ yls.nopair.stat.p)
+(yls_assuming_indep_p=2*(pnorm(yls_assuming_indep, lower.tail=F))) #since positive statistic
+(pf_assuming_indep= eyeresults$ pf.nopair.stat.p)
+(pf_assuming_indep_p=2*(pnorm(pf_assuming_indep, lower.tail=F))) #since positive statistic
+
+nstuff=((3711*3711)/(3711+3711))^(.5)
+
+#estimate area between survival curves and 95% conf. int.
+(yls.diff=eyeresults$yls.num/nstuff)
+(yls.upper=yls.diff+1.96*sqrt(eyeresults$yls.type.var)/nstuff)
+(yls.lower=yls.diff-1.96*sqrt(eyeresults$yls.type.var)/nstuff)
+
+
+#95% c.i. if assuming independence
+(yls.upper2=yls.diff+1.96*sqrt(eyeresults$yls.nopair.type.var)/nstuff)
+(yls.lower2=yls.diff-1.96*sqrt(eyeresults$yls.nopair.type.var)/nstuff)
+
+
+```
+
+
+```{r, echo=T, warning=F, message=F, cache=T, include=T, eval=T}
+
+```
+
+```{r, echo=T, warning=F, message=F, cache=T, include=T, eval=T}
+
+```
+
+```{r, echo=T, warning=F, message=F, cache=T, include=T, eval=T}
+
+```
+
+```{r, echo=T, warning=F, message=F, cache=T, include=T, eval=T}
+
+```
+
+```{r, echo=T, warning=F, message=F, cache=T, include=T, eval=T}
+
+```
+
 ```{r, echo=T, warning=F, message=F, cache=T, include=T, eval=T}
 
 ```
 
 
-#### TM(), Tayob, Murray (2014)
+
+##### Example 2: Analysis of a simulated data set.
+
+```{r, echo=T, warning=F, message=F, cache=T, include=T, eval=T}
+nx = 50
+survdat = bivlognorm(nx, .5, .5, 1, 1, .5)
+censdat = bivlognorm(nx, .75, .75, 1, 1, .5)
+x1 = apply(cbind(survdat$bivlognorm[,1], censdat$bivlognorm[,1]), 1, min)
+x2 = apply(cbind(survdat$bivlognorm[,2], censdat$bivlognorm[,2]), 1, min)
+delta1 = rep(1, nx)
+delta1[censdat$bivlognorm[,1] < survdat$bivlognorm[,1]] = 0
+delta2 = rep(1, nx)
+delta2[censdat$bivlognorm[,2] < survdat$bivlognorm[,2]] = 0
+tm = sort(unique(c(0, x1, x2)))
+maxtau = 100000
+fudge.factor = .01
+```
+
 
 ```{r, echo=T, warning=F, message=F, cache=T, include=T, eval=T}
 
+```
+
+#### TM(), Tayob, Murray (2014)
+
+```{r, echo=T, warning=F, message=F, cache=T, include=T, eval=T}
+head(pairdata2)
 ```
 
 

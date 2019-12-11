@@ -486,12 +486,14 @@ format_data_AG = function(X, delta, Z_star) {
     if(length(T_start) != length(T_stop)) { print(i) }
   }
   
-  list(
-    ID = ID_AG,
-    T_start = T_start, 
-    T_stop = T_stop, 
-    status = status
+  return(
+    list(
+      ID = ID_AG,
+      T_start = T_start, 
+      T_stop = T_stop, 
+      status = status
     )
+  )
   
 }
 

@@ -11,7 +11,6 @@ Authors@R: c(
            role = c("aut"),
            email = "skmurray@umich.edu"))
 Description: Collection of tests for paired survival data.
-License: What license it uses
 NeedsCompilation: yes
 Encoding: UTF-8
 LazyData: true
@@ -20,6 +19,6 @@ Depends:
     R (>= 3.4.0)
 Imports: 
     MASS,
-    survival
+    survival,
     gdata
 RoxygenNote: 6.1.99.9001
