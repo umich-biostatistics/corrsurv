@@ -1,11 +1,6 @@
-# add to dependencies if we need them
-#library(survival)
-#library(MASS)
-#library(gdata)
+
 
 #' Helper function for column sums of upper trianglular matrix
-#' 
-#' @examples
 #' 
 #' @author Nabihah Tayob
 #' 
@@ -18,6 +13,7 @@ sum_function = function(X) {
   lowerTriangle(temp, diag = F) = 0
   apply(temp, 2, sum)
 }
+
 
 #' Format observed data for TM (Tayob, Murray method)
 #' 
@@ -42,14 +38,11 @@ sum_function = function(X) {
 #' 
 #' @examples
 #' 
-#' 
 #' @author Nabihah Tayob
 #' 
 #' @references Tayob, N. and Murray, S., 2014. Nonparametric tests of treatment 
 #' effect based on combined endpoints for mortality and recurrent events. Biostatistics, 
 #' 16(1), pp.73-83.
-#'
-#'
 
 format_data_ourmethod = function(X, delta, Z, t) {
   
@@ -82,15 +75,13 @@ format_data_ourmethod = function(X, delta, Z, t) {
   delta_tk = array(delta_tk, c(n*b, 1))
   ID = rep(seq(1:n), b)
   list(ID = ID, X_tk = X_tk, delta_tk = delta_tk, t_k = t_k, n = n)
-  # OUTPUT
-  # ID=vector containing numeric identifying numbers for each patient corresponding to row numbers of input data
-  # X_tk=vector containing observed time to combined end-point for each follow-up window
-  # delta_tk=vector containing combined end-point event indicator. 1 if combined-endpoint is observed and 0 if censored
-  # t_k=vector containing start times of corresponding follow-up window
-  # n=number of patients in dataset
+  
 }
 
+
 #' Get estimate and variance of estimate for method described in Tayob, Murray 2015
+#' 
+#' This function is used internally when TM() is called.
 #'
 #' @param X_km vector containing observed time to combined end-point for each follow-up window
 #' @param delta_tk vector containing combined end-point event indicator. 1 if 
@@ -113,12 +104,6 @@ format_data_ourmethod = function(X, delta, Z, t) {
 #' 16(1), pp.73-83.
 
 get_mu_hat_star_tau = function(X_km, delta_km, Tau, t) {
-  ############ Get estimate and variance of estimate
-  # INPUT
-  # X_km=vector containing observed time to combined end-point for each follow-up window
-  # delta_tk=vector containing combined end-point event indicator. 1 if combined-endpoint is observed and 0 if censored
-  # Tau=length of follow-up intervals of interest
-  # t=vector containing start times of follow-up windows chosen
   
   b = length(t)
   n = length(X_km) / b
@@ -159,15 +144,14 @@ get_mu_hat_star_tau = function(X_km, delta_km, Tau, t) {
   williams_var = var(z_i_ATau) / n
   
   list(mean = mean, var = williams_var)
-  # OUTPUT
-  # mean=estimate of overall tau restricted mean survival
-  # var=empirical variance estimate of mean
+  
 }
 
 
 #' Get RMRL, area under RMRL and variance of area under RMRL
 #'
-#' RMRL is the restricted mean residual life function evaluated at times defined by t
+#' RMRL is the restricted mean residual life function evaluated at times defined by t.
+#' This function is used internally when TM() is called.
 #'
 #' @param data_format output of function "format_data_ourmethod"
 #' @param Tau length of follow-up intervals of interest
@@ -189,11 +173,7 @@ get_mu_hat_star_tau = function(X_km, delta_km, Tau, t) {
 #' 16(1), pp.73-83.
 
 RMRL_function = function(data_format, Tau, t) {
-  ################## Get RMRL, area under RMRL and variance of area under RMRL
-  # INPUT
-  # data_format=output of function "format_data_ourmethod"
-  # Tau=length of follow-up intervals of interest
-  # t=vector containing start times of follow-up windows chosen
+  
   b = length(t)
   data_tk = data.frame(data_format)
   time = unique(sort(data_tk$X_tk*as.numeric(data_tk$X_tk <= Tau)))
@@ -244,11 +224,9 @@ RMRL_function = function(data_format, Tau, t) {
   
   list(RMRL = RMRL, area_under_RMRL = area_under_RMRL, 
        var_area_under_RMRL = var_area_under_RMRL)
-  # OUTPUT
-  # RMRL=restricted mean residual life function evaluated at times defined by t
-  # area_under_RMRL=area under RMRL function evaluated at times t
-  # var_area_under_RMRL=empirical variance of estimate area_under_RMRL
+  
 }  
+
 
 #' Two-sample recurrent events test
 #' 
@@ -284,10 +262,10 @@ RMRL_function = function(data_format, Tau, t) {
 #' @references Tayob, N. and Murray, S., 2014. Nonparametric tests of treatment 
 #' effect based on combined endpoints for mortality and recurrent events. Biostatistics, 
 #' 16(1), pp.73-83.
-#' 
-#' 
 
 TM = function(X, delta, Z, Group, Tau, t, method = "average", plot = FALSE) {
+  
+  args = match.call()
   
   Group_id = unique(Group)
   formatted_group1_data = format_data_ourmethod(X = X[Group == Group_id[1]],
@@ -319,23 +297,47 @@ TM = function(X, delta, Z, Group, Tau, t, method = "average", plot = FALSE) {
     test_stat_p = 2*(1 - pnorm(test_stat))
     mean12 = c(results1$area_under_RMRL, results2$area_under_RMRL)
     var12 = c(results1$var_area_under_RMRL, results2$var_area_under_RMRL)   
-    
-    if(plot) {
-      RMRL1 = results1$RMRL
-      RMRL2 = results2$RMRL
-      xadj = Tau/50
-      yadj1 = max(RMRL1, RMRL2)/20
-      yadj2 = max(RMRL1, RMRL2)/50
-      matplot(cbind(t, t), cbind(RMRL1, RMRL2), type = "l", xaxs = "i", xaxt = "n", 
-              yaxs = "i", xlab = "Time", ylab= "RMRL", xlim = c(t[1] - xadj, t[length(t)] + xadj), 
-              ylim = c(min(RMRL1, RMRL2) - yadj1, max(RMRL1, RMRL2) + yadj2))
-      points(t, RMRL1, pch = 20, cex = 1, col = "black")
-      points(t, RMRL2, pch = 20, cex = 1, col = "red")
-      axis(1, at = t, labels = t)
-      legend("bottomright", c("Group 1", "Group 2"), col = c("black", "red"), 
-             lty = c(1, 2), bty = "n")
-    }
   }
+  
+  result = 
+    list(
+      Mean = mean12, 
+      Var = var12, 
+      test_stat = test_stat, 
+      test_stat_p = test_stat_p,
+      args = args,
+      Group_id = Group_id,
+      formatted_group1_data = formatted_group1_data,
+      formatted_group2_data = formatted_group2_data,
+      results1 = results1,
+      results2 = results2
+    )
+  
+  attr(result, "class") = "TM"
+  
+  return(
+    result
+  )
+
+}
+
+
+#' Print a TM object
+#' 
+#' @param object an object of class 'TM'
+
+print.TM = function(object) {
+  
+  test_stat_p = object$test_stat_p
+  args = object$args
+  t = args$t
+  Tau = args$Tau
+  method = args$method
+  Group_id = object$Group_id
+  formatted_group1_data = object$formatted_group1_data
+  formatted_group2_data = object$formatted_group2_data
+  results1 = object$results1
+  results2 = object$results2
   
   test_stat_p_print = paste("=", round(test_stat_p, 5))
   if(round(test_stat_p, 5) == 0) { test_stat_p_print = "<0.00001" }
@@ -346,10 +348,10 @@ TM = function(X, delta, Z, Group, Tau, t, method = "average", plot = FALSE) {
                                     paste("[", t[k], ",", t[k] + Tau, "]"), "     ")
   }
   
-  #PRINT OUTPUT
   cat("************Two-Sample Test for combined end-point across multiple follow-up windows************")
   cat("\n")
-  cat("Reference Paper: Nonparametric Tests of Treatment Effect for a Recurrent Event process that Terminates- N Tayob and S Murray")
+  cat("Reference Paper: Nonparametric Tests of Treatment Effect for a Recurrent 
+      Event process that Terminates- N Tayob and S Murray")
   cat("\n")
   cat("\n")
   cat("Group definitions:")
@@ -380,7 +382,8 @@ TM = function(X, delta, Z, Group, Tau, t, method = "average", plot = FALSE) {
     cat(paste("Group 2: ", round(results2$mean, 5)))
     cat("\n")
     cat("\n")
-    cat("Alternative hypothesis: True difference in the average restricted mean survival across follow-up windows is not equal to 0")
+    cat("Alternative hypothesis: True difference in the average restricted mean 
+        survival across follow-up windows is not equal to 0")
     cat("\n")
   }
   
@@ -392,32 +395,52 @@ TM = function(X, delta, Z, Group, Tau, t, method = "average", plot = FALSE) {
     cat(paste("Group 2: ", round(results2$area_under_RMRL, 5)))
     cat("\n")
     cat("\n")
-    cat("Alternative hypothesis: True difference in the area under the RMRL functions is not equal to 0")
+    cat("Alternative hypothesis: True difference in the area under the RMRL functions 
+        is not equal to 0")
     cat("\n")
   }
   cat(paste("Test-statistic=", round(test_stat, 5), ", p-value", test_stat_p_print))
   
-  return(
-    list(
-      Mean = mean12, 
-      Var = var12, 
-      test_stat = test_stat, 
-      test_stat_p = test_stat_p
-      )
-    )
-  # OUTPUT
-  # Mean= vector containing sample estimates of overall tau-restricted mean survival in each group
-  # Var= vector containing empirical variance of estimates of overall tau-restricted mean survival in each group
-  # test_stat= test statistic of two-sample test
-  # test_stat_p= p-value of two-sample test
 }
+
+
+#' Plot a TM object
+#' 
+#' @param object an object of class 'TM'
+
+plot.TM = function(object) {
+  
+  args = object$args
+  method = args$method
+  t = args$t
+  Tau = args$Tau
+  results1 = object$results1
+  results2 = object$results2
+  
+  if(method != "area") { stop("Plotting is only implemented for the 'area' method") }
+  
+  RMRL1 = results1$RMRL
+  RMRL2 = results2$RMRL
+  xadj = Tau/50
+  yadj1 = max(RMRL1, RMRL2)/20
+  yadj2 = max(RMRL1, RMRL2)/50
+  matplot(cbind(t, t), cbind(RMRL1, RMRL2), type = "l", xaxs = "i", xaxt = "n", 
+          yaxs = "i", xlab = "Time", ylab= "RMRL", xlim = c(t[1] - xadj, t[length(t)] + xadj), 
+          ylim = c(min(RMRL1, RMRL2) - yadj1, max(RMRL1, RMRL2) + yadj2))
+  points(t, RMRL1, pch = 20, cex = 1, col = "black")
+  points(t, RMRL2, pch = 20, cex = 1, col = "red")
+  axis(1, at = t, labels = t)
+  legend("bottomright", c("Group 1", "Group 2"), col = c("black", "red"), 
+          lty = c(1, 2), bty = "n")
+  
+}
+
 
 #' Format observed data for Andersen-Gill method
 #'
 #' @param X vector containing observed time to terminating event
 #' @param delta vector that is 1 if terminating event is observed and 0 if patient is censored
 #' @param Z_star fill
-#'
 #'
 #' @return A \code{list} object which contains
 #' \itemize {
@@ -434,8 +457,7 @@ TM = function(X, delta, Z, Group, Tau, t, method = "average", plot = FALSE) {
 #' 16(1), pp.73-83.
 
 format_data_AG = function(X, delta, Z_star) {
-  ############format observed data for Andersen-Gill method
-  #load data
+  
   n = length(X)
   
   X_Z_star = cbind(Z_star, X)
@@ -464,15 +486,21 @@ format_data_AG = function(X, delta, Z_star) {
     if(length(T_start) != length(T_stop)) { print(i) }
   }
   
-  list(
-    ID = ID_AG,
-    T_start = T_start, 
-    T_stop = T_stop, 
-    status = status
+  return(
+    list(
+      ID = ID_AG,
+      T_start = T_start, 
+      T_stop = T_stop, 
+      status = status
     )
+  )
+  
 }
 
+
 #' Andersen-Gill test
+#' 
+#' Andersen-Gill model based two-sample test.
 #'
 #' @param data1_format Data for sample 1 formatted using \code{format_data_AG}
 #' @param data2_format Data for sample 2 formatted using \code{format_data_AG}
@@ -489,7 +517,7 @@ format_data_AG = function(X, delta, Z_star) {
 #' 16(1), pp.73-83.
 
 AG_test_stat = function(data1_format, data2_format) {
-  #Andersen-Gill model based two-sample test
+  
   n1 = length(data1_format$ID)
   treatment = c(rep(0, length(data1_format$ID)), rep(1, length(data2_format$ID)))
   T_start = c(data1_format$T_start, data2_format$T_start)
@@ -498,9 +526,13 @@ AG_test_stat = function(data1_format, data2_format) {
   id = c(data1_format$ID, data2_format$ID + n1)
   ag_model = coxph(Surv(T_start, T_stop, status) ~ treatment + cluster(id))
   test_stat_p = 1 - pchisq(ag_model$wald.test, 1)
-  list(
-    test_stat_p = test_stat_p
+  
+  return(
+    list(
+      test_stat_p = test_stat_p
     )
+  )
+  
 }
 
 
@@ -529,8 +561,7 @@ AG_test_stat = function(data1_format, data2_format) {
 #' 16(1), pp.73-83.
 
 format_data_GL = function(X, delta, Z_star, time) {
-  ############format observed data for Ghosh and Lin method
-  #load data
+  
   n_time = length(time)
   n = length(X)
   
@@ -571,23 +602,27 @@ format_data_GL = function(X, delta, Z_star, time) {
   #calculate last observed event time
   tau = max(X*delta)
   
-  list(
-    Y = Y,
-    tau = tau,
-    dmu_hat = dmu_hat,
-    dch_hat = dch_hat,
-    dpsi_i = dpsi_i,
-    dM_D_i = dM_D_i
+  return(
+    list(
+      Y = Y,
+      tau = tau,
+      dmu_hat = dmu_hat,
+      dch_hat = dch_hat,
+      dpsi_i = dpsi_i,
+      dM_D_i = dM_D_i
     )
+  )
+  
 }
 
+
 #' Helper to get deaths at time i
-#'
 
 get_dN_for_i = function(X1) {
   temp = (X1 == time_array2)
   apply(temp, 2, sum, na.rm = T)
 }
+
 
 #' Calculate test statistic for Ghosh and Lin method
 #'
@@ -608,7 +643,7 @@ get_dN_for_i = function(X1) {
 #' 16(1), pp.73-83.
 
 GL_test_stat = function(p_GL, time, data1_format, data2_format) {
-  #Load data
+  
   Y1 = data1_format$Y
   Y2 = data2_format$Y
   tau1 = data1_format$tau
@@ -657,9 +692,4 @@ GL_test_stat = function(p_GL, time, data1_format, data2_format) {
   )
   
 }
-
-
-
-
-
 

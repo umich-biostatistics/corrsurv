@@ -42,8 +42,8 @@
 #' @export 
 #'
 
-pairtest=function(x1, delta1, x2, delta2, n, tm = sort(unique(c(0,x1,x2))), 
-                  weights = "left", maxtau = 100000, fudge.factor = 0)  {
+pairtest = function(x1, delta1, x2, delta2, n, tm = sort(unique(c(0,x1,x2))), 
+                    weights = "left", maxtau = 100000, fudge.factor = 0)  {
 
   #weights=left will give pf and yls weighting using upperlimit similar to logrank
   #weights=right will use weights that are similar, but right continuous
@@ -484,7 +484,144 @@ pairtest=function(x1, delta1, x2, delta2, n, tm = sort(unique(c(0,x1,x2))),
       pf.nopair.stat.p = pf.nopair.type.p
     )
   
+  attr(answer, "class") = "pairtest"
+  
   return(answer)
 }
 
+
+#' Print a pairtest object
+#'
+#' @param object an object of class 'pairtest'
+
+print.pairtest = function(object) {
+  
+  integration_upper_limit = object$upperlim
+  
+  logrank_statistic = object$lgrk.stat.p
+  logrank_statistic_p = dtail(logrank_statistic)
+  
+  gehan_statistic = object$gehan.stat.p
+  gehan_statistic_p = dtail(gehan_statistic)
+  
+  yls_statistic = object$yls.stat.p
+  yls_statistic_p = dtail(yls_statistic)
+  
+  pepe_flem_statistic = object$pf.stat.p
+  pepe_flem_statistic_p = dtail(pepe_flem_statistic)
+  
+  logrank_assuming_indep = object$lgrk.nopair.stat.p
+  logrank_assuming_indep_p = dtail(logrank_assuming_indep)
+  
+  gehan_assuming_indep = object$gehan.nopair.stat.p
+  gehan_assuming_indep_p = dtail(gehan_assuming_indep)
+  
+  yls_assuming_indep = object$yls.nopair.stat.p
+  yls_assuming_indep_p = dtail(yls_assuming_indep)
+  
+  pf_assuming_indep = object$ pf.nopair.stat.p
+  pf_assuming_indep_p = dtail(pf_assuming_indep)
+  
+  n1 = object$n1
+  n2 = object$n2
+  nstuff = ((n1*n2) / (n1 + n2))^(.5)
+  
+  yls.diff = object$yls.num / nstuff
+  
+  yls.upper = yls.diff + 1.96*sqrt(object$yls.type.var) / nstuff
+  yls.lower = yls.diff - 1.96*sqrt(object$yls.type.var) / nstuff
+
+  yls.upper2 = yls.diff + 1.96*sqrt(object$yls.nopair.type.var) / nstuff
+  yls.lower2 = yls.diff - 1.96*sqrt(object$yls.nopair.type.var) / nstuff
+  
+  cat("\n")
+  cat(" ************  Paired sample test results  ************")
+  cat("\n")
+  cat("\n")
+  cat(" Reference Paper: Murray, Susan. Nonparametric Rank-Based Methods for Group")
+  cat("\n")
+  cat(" Sequential Monitoring of Paired Censored Survival Data. 2000. Biometrics,")
+  cat("\n")
+  cat(" 56, pp. 984-990.")
+  cat("\n")
+  cat("\n")
+  cat(paste(" Upper limit of integration is", integration_upper_limit))
+  cat("\n")
+  cat("\n")
+  cat("  Logrank statistic: ")
+  cat("\n")
+  cat(paste("   Logrank estimate = ", logrank_statistic, ", ", "p-value = ", 
+            logrank_statistic_p, sep = ""))
+  cat("\n")
+  cat("\n")
+  cat("  Gehan statistic: ")
+  cat("\n")
+  cat(paste("   Gehan estimate = ", gehan_statistic, ", ", "p-value = ", 
+            gehan_statistic_p, sep = ""))
+  cat("\n")
+  cat("\n")
+  cat("  Pepe and Fleming statistic: ")
+  cat("\n")
+  cat(paste("   PF estimate = ", pepe_flem_statistic, ", ", "p-value = ", 
+            pepe_flem_statistic_p, sep = ""))
+  cat("\n")
+  cat("\n")
+  cat("  Years of Life Statistic: ")
+  cat("\n")
+  cat(paste("   YLS estimate = ", yls_statistic, ", ", "p-value = ", 
+            yls_statistic_p, sep = ""))
+  cat("\n")
+  cat("\n")
+  cat(paste("   YLS area between curves = ", yls.diff, "\n   ", "  95% CI for YLS area between curves = (", 
+            yls.lower, ", ", yls.upper, ")", sep = ""))
+  cat("\n")
+  cat("\n")
+  cat("\n")
+  cat("\n")
+  cat(" *****  Results assuming independence (included for comparison)  *****")
+  cat("\n")
+  cat("\n")
+  cat("  Logrank statistic: ")
+  cat("\n")
+  cat(paste("   Logrank estimate = ", logrank_assuming_indep, ", ", "p-value = ", 
+            logrank_assuming_indep_p, sep = ""))
+  cat("\n")
+  cat("\n")
+  cat("  Gehan statistic: ")
+  cat("\n")
+  cat(paste("   Gehan estimate = ", gehan_assuming_indep, ", ", "p-value = ", 
+            gehan_assuming_indep_p, sep = ""))
+  cat("\n")
+  cat("\n")
+  cat("  Pepe and Fleming statistic: ")
+  cat("\n")
+  cat(paste("   PF estimate = ", pf_assuming_indep, ", ", "p-value = ", 
+            pf_assuming_indep_p, sep = ""))
+  cat("\n")
+  cat("\n")
+  cat("  Years of Life Statistic assuming independence: ")
+  cat("\n")
+  cat(paste("   YLS estimate = ", yls_assuming_indep, ", ", "p-value = ", 
+            yls_assuming_indep_p, sep = ""))
+  cat("\n")
+  cat("\n")
+  cat(paste("   YLS area between curves = ", yls.diff, "\n", "    95% CI for YLS area between curves = (", 
+            yls.lower2, ", ", yls.upper2, ")", sep = ""))
+  cat("\n")
+  cat("\n")
+  
+}
+
+#' Choose appropriate tail for two-sided test
+#' 
+#' For internal use only.
+#' 
+#' @param stat test statistic
+#' 
+#' @return numeric. p-value for the two-sided test
+
+dtail = function(stat) {
+  if(stat <= 0) { return(2*(pnorm(stat, lower.tail = T))) }
+  else { return(2*(pnorm(stat, lower.tail = F))) }
+}
 
