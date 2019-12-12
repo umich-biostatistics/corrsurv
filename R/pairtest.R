@@ -1,16 +1,4 @@
-#generate some data first
-#nx=50
-#survdat=bivlognorm(nx,.5,.5,1,1,.5)
-#censdat=bivlognorm(nx,.75,.75,1,1,.5)
-#x1=apply(cbind(survdat$bivlognorm[,1],censdat$bivlognorm[,1]),1,min)
-#x2=apply(cbind(survdat$bivlognorm[,2],censdat$bivlognorm[,2]),1,min)
-#delta1=rep(1,nx)
-#delta1[censdat$bivlognorm[,1]<survdat$bivlognorm[,1]]=0
-#delta2=rep(1,nx)
-#delta2[censdat$bivlognorm[,2]<survdat$bivlognorm[,2]]=0
-#tm=sort(unique(c(0,x1,x2)))
-#maxtau=100000
-#fudge.factor=.01
+
 
 #' Title for matched.survtest function. <10 words
 #' 
@@ -35,9 +23,15 @@
 #'
 #' @seealso 
 #'
-#' @references 
+#' @references Murray, Susan. Nonparametric Rank-Based Methods for Group
+#' Sequential Monitoring of Paired Censored Survival Data. 2000. Biometrics,
+#' 56, pp. 984-990.
 #'
-#' @examples 
+#' @examples
+#' data(pairdata)
+#' eyeresults = pairtest(x1 = pairdata$x1, delta1 = pairdata$delta1, 
+#'                       x2 = pairdata$x2, delta2 = pairdata$delta2, n = 3711)
+#' print(eyeresults)
 #' 
 #' @export 
 #'
@@ -599,7 +593,7 @@ print.pairtest = function(object) {
             pf_assuming_indep_p, sep = ""))
   cat("\n")
   cat("\n")
-  cat("  Years of Life Statistic assuming independence: ")
+  cat("  Years of Life Statistic: ")
   cat("\n")
   cat(paste("   YLS estimate = ", yls_assuming_indep, ", ", "p-value = ", 
             yls_assuming_indep_p, sep = ""))
@@ -611,6 +605,7 @@ print.pairtest = function(object) {
   cat("\n")
   
 }
+
 
 #' Choose appropriate tail for two-sided test
 #' 

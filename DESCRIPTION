@@ -1,5 +1,5 @@
 Package: pairsurv
-Title: Tests for paired survival data
+Title: Two-Sample Tests for Correlated Survival Endpoints
 Version: 0.1.0
 Authors@R: c(
     person(given = "Michael",
@@ -10,15 +10,21 @@ Authors@R: c(
            family = "Murray",
            role = c("aut"),
            email = "skmurray@umich.edu"))
-Description: Collection of tests for paired survival data.
+Description: Collection of two-sample tests for treatment effects with paired censored
+    survival data and recurrent events survival data. The methods are implementations of 
+    three papers by Susan Murray and Nabihah Tayob.
 NeedsCompilation: yes
 Encoding: UTF-8
 LazyData: true
 License: MIT
+URL: 
+BugReports: 
 Depends: 
     R (>= 3.4.0)
 Imports: 
     MASS,
     survival,
     gdata
+VignetteBuilder: knitr
 RoxygenNote: 6.1.99.9001
+Roxygen: list(markdown = TRUE)
