@@ -2,6 +2,8 @@
 #  R package: Estimate of the tau-restricted mean survival
 ##############################################################
 
+# Tayob, N. and Murray, S., 2016. Nonparametric restricted mean analysis across multiple follow-up intervals. Statistics & probability letters, 109, pp.152-158.
+
 # Arguments for main function
 # X=follow-up time of right censored data (values must be geq 0)
 # delta=status indicator, 0=alive, 1=dead. (values must be 0,1)
