@@ -28,7 +28,7 @@ using methods from the following papers:
 Murray, Susan. Nonparametric Rank-Based Methods for Group Sequential Monitoring of 
 Paired Censored Survival Data. 2000. Biometrics, 56, pp. 984-990.
 
-Use the `pairtest()` function to use the methods contained in this paper.
+Use the `pairtest()` function to use the methods from this paper.
 
 #### Method 2
 
@@ -36,14 +36,14 @@ Tayob, N. and Murray, S., 2014. Nonparametric tests of treatment
 effect based on combined endpoints for mortality and recurrent events. Biostatistics, 
 16(1), pp.73-83.
 
-Use the `TM()` function to use the methods contained in this paper. 
+Use the `TM()` function to use the methods from this paper. 
 
 #### Method 3
 
 Tayob, N. and Murray, S., 2016. Nonparametric restricted mean analysis across multiple 
 follow-up intervals. Statistics & probability letters, 109, pp.152-158.
 
-Use the `TM2()` function to use the methods contained in this paper.
+Use the `TM2()` function to use the methods from this paper.
 
 
 ## Install
@@ -77,113 +77,116 @@ options(digits = 3)
 
 ##### Example 1: Analysis of package data set `pairdata`.
 
+Data: 
+
+Enrolled 3711 patients with mild-to-severe nonproliferative or early proliferative 
+diabetic retinopathy in both eyes from April 1980 to July 1985 – One eye per patient 
+was randomized to early photocoagulation – The other eye deferred photocoagulation 
+until detection of high-risk proliferative retinopathy. 
+• Survival endpoint: Time to severe visual loss (deﬁned as visual acuity < 5/200 
+  at two consecutive visits) subject to censoring 
+• eventually detected a beneﬁt with early photocoagulation 
+• after 9 years of follow-up, only 5.5% of patients had experienced the event (lots of censoring)
+
+Important Feature of ETDRS Data: Paired Event Times
+
+Paired Design Attractive: 
+• Historically used to minimize variability in treatment comparisons 
+• With positive correlation in pairs that is taken into account in an analysis: – higher power for ﬁxed sample size than independent designs – smaller required sample size for ﬁxed power than independent designs 
+• At the time the ETDRS study was published, the investigators did not have access to these paired tests for censored survival data, but they recognized the statistical issues relating to the correlated structure of the data. Some exploratory analysis on their part suggested “that not taking pairing into account led to conservative tests (ETDRS Research Group, 1991a, p. 749).”
+
+
 ```{r, echo=T, warning=F, message=F, cache=T, include=T, eval=T}
 head(pairdata)
+```
 
-eyeresults = pairtest(pairdata$x1, pairdata$delta1, pairdata$x2, pairdata$delta2, 3711)
+The function `pairsurv` requires the time-to-event data for each pair (`x1` and `x2`)
+and the event indicator for each of the times (`delta1` for `x1`, and `delta2` for `x2`).
+The event indicators (`delta1`, `delta2`) equal 1 if the event occured and 0 if the 
+patient was censored.
 
+```{r, echo=T, warning=F, message=F, cache=T, include=T, eval=T}
+eyeresults = pairtest(x1 = pairdata$x1, delta1 = pairdata$delta1, 
+                      x2 = pairdata$x2, delta2 = pairdata$delta2, n = 3711)
+```
+
+Print results:
+```{r, echo=T, warning=F, message=F, cache=T, include=T, eval=T}
 print(eyeresults)
-
-(integration_upper_limit= eyeresults$upperlim)
-
-(logrank_statistic=eyeresults$lgrk.stat.p)
-
-(logrank_statistic_p=2*(pnorm(logrank_statistic, lower.tail=T)) )#since negative statistic
-
-(gehan_statistic=eyeresults$gehan.stat.p)
-
-(gehan_statistic_p=2*(pnorm(gehan_statistic, lower.tail=T)) )#since negative statistic
-
-(yls_statistic=eyeresults$yls.stat.p)
-
-(yls_statistic_p=2*(pnorm(yls_statistic, lower.tail=F))) #since positive statistic
-
-(pepe_flem_statistic=eyeresults$pf.stat.p)
-
-(pepe_flem_statistic_p=2*(pnorm(pepe_flem_statistic, lower.tail=F))) #since positive statistic
-
-(logrank_assuming_indep=eyeresults$ lgrk.nopair.stat.p)
-(logrank_assuming_indep_p=2*(pnorm(logrank_assuming_indep, lower.tail=T)) )#since negative statistic
-(gehan_assuming_indep= eyeresults$gehan.nopair.stat.p)
-(gehan_assuming_indep_p=2*(pnorm(gehan_assuming_indep, lower.tail=T))) #since negative statistic
-(yls_assuming_indep= eyeresults$ yls.nopair.stat.p)
-(yls_assuming_indep_p=2*(pnorm(yls_assuming_indep, lower.tail=F))) #since positive statistic
-(pf_assuming_indep= eyeresults$ pf.nopair.stat.p)
-(pf_assuming_indep_p=2*(pnorm(pf_assuming_indep, lower.tail=F))) #since positive statistic
-
-nstuff=((3711*3711)/(3711+3711))^(.5)
-
-#estimate area between survival curves and 95% conf. int.
-(yls.diff=eyeresults$yls.num/nstuff)
-(yls.upper=yls.diff+1.96*sqrt(eyeresults$yls.type.var)/nstuff)
-(yls.lower=yls.diff-1.96*sqrt(eyeresults$yls.type.var)/nstuff)
-
-
-#95% c.i. if assuming independence
-(yls.upper2=yls.diff+1.96*sqrt(eyeresults$yls.nopair.type.var)/nstuff)
-(yls.lower2=yls.diff-1.96*sqrt(eyeresults$yls.nopair.type.var)/nstuff)
-
-
 ```
+
+
+If you need to access any result not printed by pairtest, use the $ operator to 
+search available objects to extract. The test statistic and p-value for each 
+test is returned from the call to pairsurv in a list.
+
+Here are the printed and stored results extracted from pairsurv:
 
 
 ```{r, echo=T, warning=F, message=F, cache=T, include=T, eval=T}
+# Upper limit of integration
+(integration_upper_limit = eyeresults$upperlim)
 
+# Logrank statistic
+(logrank_statistic = eyeresults$lgrk.stat.p)
+(logrank_statistic_p = 2*(pnorm(logrank_statistic, lower.tail = T))) # since negative statistic
+
+# Gehan statistic
+(gehan_statistic = eyeresults$gehan.stat.p)
+(gehan_statistic_p = 2*(pnorm(gehan_statistic, lower.tail = T))) # since negative statistic
+
+# Years of Life statistic
+(yls_statistic = eyeresults$yls.stat.p)
+(yls_statistic_p = 2*(pnorm(yls_statistic, lower.tail = F))) # since positive statistic
+
+# Pepe Fleming statistic
+(pepe_flem_statistic = eyeresults$pf.stat.p)
+(pepe_flem_statistic_p = 2*(pnorm(pepe_flem_statistic, lower.tail = F))) # since positive statistic
+
+# Logrank statistic assuming independence
+(logrank_assuming_indep = eyeresults$lgrk.nopair.stat.p)
+(logrank_assuming_indep_p = 2*(pnorm(logrank_assuming_indep, lower.tail = T)) ) # since negative statistic
+
+# Gehan statistic assuming independence
+(gehan_assuming_indep = eyeresults$gehan.nopair.stat.p)
+(gehan_assuming_indep_p = 2*(pnorm(gehan_assuming_indep, lower.tail = T))) # since negative statistic
+
+# Years of Life assuming independence
+(yls_assuming_indep = eyeresults$yls.nopair.stat.p)
+(yls_assuming_indep_p = 2*(pnorm(yls_assuming_indep, lower.tail = F))) # since positive statistic
+
+# Pepe Fleming assuming independence
+(pf_assuming_indep = eyeresults$pf.nopair.stat.p)
+(pf_assuming_indep_p = 2*(pnorm(pf_assuming_indep, lower.tail = F))) # since positive statistic
+
+# group size adjustment
+nstuff = ((3711*3711) / (3711 + 3711))^(.5)
+
+# estimate area between survival curves and 95% conf. int.
+(yls.diff = eyeresults$yls.num / nstuff)
+
+(yls.upper = yls.diff + 1.96*sqrt(eyeresults$yls.type.var) / nstuff)
+(yls.lower = yls.diff - 1.96*sqrt(eyeresults$yls.type.var) / nstuff)
+
+# 95% CI assuming independence
+(yls.upper2 = yls.diff + 1.96*sqrt(eyeresults$yls.nopair.type.var) / nstuff)
+(yls.lower2 = yls.diff - 1.96*sqrt(eyeresults$yls.nopair.type.var) / nstuff)
 ```
 
-```{r, echo=T, warning=F, message=F, cache=T, include=T, eval=T}
 
-```
-
-```{r, echo=T, warning=F, message=F, cache=T, include=T, eval=T}
-
-```
-
-```{r, echo=T, warning=F, message=F, cache=T, include=T, eval=T}
-
-```
-
-```{r, echo=T, warning=F, message=F, cache=T, include=T, eval=T}
-
-```
-
-```{r, echo=T, warning=F, message=F, cache=T, include=T, eval=T}
-
-```
-
-
-
-##### Example 2: Analysis of a simulated data set.
-
-```{r, echo=T, warning=F, message=F, cache=T, include=T, eval=T}
-nx = 50
-survdat = bivlognorm(nx, .5, .5, 1, 1, .5)
-censdat = bivlognorm(nx, .75, .75, 1, 1, .5)
-x1 = apply(cbind(survdat$bivlognorm[,1], censdat$bivlognorm[,1]), 1, min)
-x2 = apply(cbind(survdat$bivlognorm[,2], censdat$bivlognorm[,2]), 1, min)
-delta1 = rep(1, nx)
-delta1[censdat$bivlognorm[,1] < survdat$bivlognorm[,1]] = 0
-delta2 = rep(1, nx)
-delta2[censdat$bivlognorm[,2] < survdat$bivlognorm[,2]] = 0
-tm = sort(unique(c(0, x1, x2)))
-maxtau = 100000
-fudge.factor = .01
-```
-
-
-```{r, echo=T, warning=F, message=F, cache=T, include=T, eval=T}
-
-```
-
-#### TM(), Tayob, Murray (2014)
+#### TM(), Tayob and Murray (2014)
 
 ```{r, echo=T, warning=F, message=F, cache=T, include=T, eval=T}
 head(pairdata2)
 ```
 
 
-#### TM2(), Tayob, Murray (2016)
+#### TM2(), Tayob and Murray (2016)
 
 ```{r, echo=T, warning=F, message=F, cache=T, include=T, eval=T}
 
 ```
+
+
+
+
