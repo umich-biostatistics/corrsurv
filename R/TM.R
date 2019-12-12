@@ -36,8 +36,6 @@ sum_function = function(X) {
 #'   \item{n}{number of patients in dataset}
 #' }
 #' 
-#' @examples
-#' 
 #' @author Nabihah Tayob
 #' 
 #' @references Tayob, N. and Murray, S., 2014. Nonparametric tests of treatment 
@@ -94,8 +92,6 @@ format_data_ourmethod = function(X, delta, Z, t) {
 #'   \item{mean}{estimate of overall tau restricted mean survival}
 #'   \item{var}{empirical variance estimate of mean}
 #' }
-#' 
-#' @examples
 #' 
 #' @author Nabihah Tayob
 #' 
@@ -163,8 +159,6 @@ get_mu_hat_star_tau = function(X_km, delta_km, Tau, t) {
 #'   \item{area_under_RMRL}{area under RMRL function evaluated at times t}
 #'   \item{var_area_under_RMRL}{empirical variance of estimate area_under_RMRL}
 #' }
-#' 
-#' @examples
 #' 
 #' @author Nabihah Tayob
 #'
@@ -256,6 +250,7 @@ RMRL_function = function(data_format, Tau, t) {
 #' }
 #' 
 #' @examples
+#' 
 #'
 #' @author Nabihah Tayob
 #' 
