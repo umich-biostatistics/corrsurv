@@ -3,20 +3,27 @@
 \docType{data}
 \name{pairdata}
 \alias{pairdata}
-\title{Paired survival data set for examples and tests.}
+\title{Early Treatment Diabetic Retinopathy Study}
 \format{A \code{data.frame} with 3711 observations (rows) and 6 variables (columns):
 \describe{
-  \item{trt1}{description, type}
-  \item{x1}{description, type}
-  \item{delta1}{description, type}
-  \item{trt2}{description, type}
-  \item{x2}{description, type}
-  \item{delta2}{description, type}
+\item{trt1}{numeric, indicator for treatment group 1}
+\item{x1}{numeric, time to event for treatment group 1}
+\item{delta1}{numeric, 1 if subject died, 0 if censored}
+\item{trt2}{numeric, indicator for treatment group 2}
+\item{x2}{numeric, time to event for treatment group 2}
+\item{delta2}{numeric, 1 if subject died, 0 if censored}
 }}
 \usage{
 pairdata
 }
 \description{
-Describe the data set.
+Enrolled 3711 patients with mild-to-severe nonproliferative or early proliferative
+diabetic retinopathy in both eyes from April 1980 to July 1985 – One eye per patient
+was randomized to early photocoagulation – The other eye deferred photocoagulation
+until detection of high-risk proliferative retinopathy.
+• Survival endpoint: Time to severe visual loss (deﬁned as visual acuity < 5/200
+at two consecutive visits) subject to censoring
+• eventually detected a beneﬁt with early photocoagulation
+• after 9 years of follow-up, only 5.5\% of patients had experienced the event (lots of censoring)
 }
 \keyword{datasets}

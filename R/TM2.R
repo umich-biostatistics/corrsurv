@@ -279,7 +279,7 @@ get_sandwich_var = function(X_km, delta_km, X_array, delta_array, Tau, t, n) {
 #RMRL functions
 #######################
 plot_RMRL = function(X, delta, Tau, alpha = 0.05, conservative_index = 25, 
-                     k = 500, n.sim = 1000) {
+                     k = 500, n.sim = 1000, ...) {
   # INPUT
   # X=time to event
   # delta=event indicator

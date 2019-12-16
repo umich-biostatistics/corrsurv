@@ -258,9 +258,10 @@ RMRL_function = function(data_format, Tau, t) {
 #' effect based on combined endpoints for mortality and recurrent events. Biostatistics, 
 #' 16(1), pp.73-83.
 
-TM = function(X, delta, Z, Group, Tau, t, method = "average", plot = FALSE) {
+TM = function(X, delta, Z, Group, Tau, t, method = "average") {
   
   args = match.call()
+  args$method = method
   
   Group_id = unique(Group)
   formatted_group1_data = format_data_ourmethod(X = X[Group == Group_id[1]],
@@ -321,13 +322,13 @@ TM = function(X, delta, Z, Group, Tau, t, method = "average", plot = FALSE) {
 #' 
 #' @param object an object of class 'TM'
 
-print.TM = function(object) {
+print.TM = function(object, digits = max(3, getOption("digits") - 3), ...) {
   
   test_stat_p = object$test_stat_p
   args = object$args
-  t = args$t
-  Tau = args$Tau
-  method = args$method
+  t = eval(args$t)
+  Tau = eval(args$Tau)
+  method = eval(args$method)
   Group_id = object$Group_id
   formatted_group1_data = object$formatted_group1_data
   formatted_group2_data = object$formatted_group2_data
@@ -340,44 +341,47 @@ print.TM = function(object) {
   
   for(k in 1:length(t)) {
     follow_up_windows_print = paste(follow_up_windows_print, 
-                                    paste("[", t[k], ",", t[k] + Tau, "]"), "     ")
+                                    paste("[", t[k], ",", t[k] + Tau, "]", sep = ""), "     ", sep = "")
   }
   
-  cat("************Two-Sample Test for combined end-point across multiple follow-up windows************")
   cat("\n")
-  cat("Reference Paper: Nonparametric Tests of Treatment Effect for a Recurrent 
-      Event process that Terminates- N Tayob and S Murray")
+  cat(" ************ Two-Sample Test for combined end-point across multiple follow-up windows ************ ")
   cat("\n")
   cat("\n")
-  cat("Group definitions:")
+  cat(" Reference Paper: Nonparametric Tests of Treatment Effect for a Recurrent")
   cat("\n")
-  cat(paste("Group 1: Group=", Group_id[1]))
+  cat(" Event process that Terminates - N Tayob and S Murray")
   cat("\n")
-  cat(paste("Group 2: Group=", Group_id[2]))
+  cat("\n")
+  cat(" Group definitions:")
+  cat("\n")
+  cat(paste("  Group 1: Group = ", Group_id[1], sep = ""))
+  cat("\n")
+  cat(paste("  Group 2: Group = ", Group_id[2], sep = ""))
   cat("\n")
   cat("\n")  
-  cat("Sample Size: ")
+  cat(" Sample Size: ")
   cat("\n")
-  cat(paste("Group 1: ", formatted_group1_data$n))
+  cat(paste("  Group 1: ", formatted_group1_data$n, sep = ""))
   cat("\n")
-  cat(paste("Group 2: ", formatted_group2_data$n))
+  cat(paste("  Group 2: ", formatted_group2_data$n, sep = ""))
   cat("\n")
   cat("\n")
-  cat("Follow-up windows:")
+  cat(" Follow-up windows:")
   cat("\n")
-  cat(follow_up_windows_print)
+  cat(paste("  ", follow_up_windows_print, sep = ""))
   cat("\n")
   cat("\n")
   
   if(method == "average") {
-    cat("Sample Estimates: Average restricted mean survival across follow-up windows")
+    cat(" Sample Estimates: Average restricted mean survival across follow-up windows")
     cat("\n")
-    cat(paste("Group 1: ", round(results1$mean, 5)))
+    cat(paste("  Group 1: ", round(results1$mean, 5), sep = ""))
     cat("\n")
-    cat(paste("Group 2: ", round(results2$mean, 5)))
+    cat(paste("  Group 2: ", round(results2$mean, 5), sep = ""))
     cat("\n")
     cat("\n")
-    cat("Alternative hypothesis: True difference in the average restricted mean 
+    cat("  Alternative hypothesis: True difference in the average restricted mean 
         survival across follow-up windows is not equal to 0")
     cat("\n")
   }
@@ -385,9 +389,9 @@ print.TM = function(object) {
   if(method == "area") {
     cat("Sample Estimates: Area under RMRL function evaluated for each follow-up window")
     cat("\n")
-    cat(paste("Group 1: ", round(results1$area_under_RMRL, 5)))
+    cat(paste("Group 1: ", round(results1$area_under_RMRL, 5), sep = ""))
     cat("\n")
-    cat(paste("Group 2: ", round(results2$area_under_RMRL, 5)))
+    cat(paste("Group 2: ", round(results2$area_under_RMRL, 5), sep = ""))
     cat("\n")
     cat("\n")
     cat("Alternative hypothesis: True difference in the area under the RMRL functions 

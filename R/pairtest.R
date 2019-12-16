@@ -1,28 +1,30 @@
 
 
-#' Title for matched.survtest function. <10 words
+#' Paired Two-Sample Tests for Survival Endpoints 
 #' 
-#' Short description for function. What does it do? What does the output include?
-#' Is this the main function or a helper?
-#' 
-#' @param x1 insert description and data type, default value if needed
-#' @param delta1 insert description and data type, default value if needed
-#' @param x2 insert description and data type, default value if needed
-#' @param delta2 insert description and data type, default value if needed
+#' Perform two-sample tests for treatment effects with paired censored
+#' survival data. The method requires the time to event or a censored observation
+#' and the event indicator for each pair of observations.
+#'
+#' @param x1 numeric, time to event for treatment group 1
+#' @param delta1 numeric, 1 if subject died, 0 if censored
+#' @param x2 numeric, time to event for treatment group 2
+#' @param delta2 numeric, 1 if subject died, 0 if censored
 #' @param n the integer number of correlated individuals and we assume they are
 #' sorted as in the paper, so that correlated observations come first up to the nth 
 #' observation and then uncorrelated observations follow.
-#' @param tm insert description and data type, default value if needed
+#' @param tm sorted vector of times to events
 #' @param weights string, options are "left" and "right". Option "left" will give pf and 
 #' yls weighting using upperlimit similar to logrank. "right" will use weights 
 #' that are similar, but right continuous.
-#' @param maxtau insert description and data type, default value if needed
-#' @param fudge.factor insert description and data type, default value if needed
-#'
-#' @return insert description and data type and what it contains
-#'
-#' @seealso 
-#'
+#' @param maxtau numeric, maximum tau cutoff
+#' 
+#' @return a \code{list} object which contains named two-sample statistics and 
+#' p-values for the independent and correlated cases, and other auxiliary information
+#' relevant to the analysis. 
+#' 
+#' @seealso TM(), TM2()
+#' 
 #' @references Murray, Susan. Nonparametric Rank-Based Methods for Group
 #' Sequential Monitoring of Paired Censored Survival Data. 2000. Biometrics,
 #' 56, pp. 984-990.
@@ -34,13 +36,9 @@
 #' print(eyeresults)
 #' 
 #' @export 
-#'
 
-pairtest = function(x1, delta1, x2, delta2, n, tm = sort(unique(c(0,x1,x2))), 
-                    weights = "left", maxtau = 100000, fudge.factor = 0)  {
-
-  #weights=left will give pf and yls weighting using upperlimit similar to logrank
-  #weights=right will use weights that are similar, but right continuous
+pairtest = function(x1, delta1, x2, delta2, n, tm = sort(unique(c(0, x1, x2))), 
+                    weights = "left", maxtau = 100000)  {
   
   maxtau = max(tm)
 
@@ -57,7 +55,6 @@ pairtest = function(x1, delta1, x2, delta2, n, tm = sort(unique(c(0,x1,x2))),
   nt = length(tm)
 
   #dN marginal terms and Y marginal terms need to use all data:
-
   failframe1 = as.data.frame(cbind(x1, delta1))
   failinfo1 = getriskdat(failframe1, tm)
   failframe2 = as.data.frame(cbind(x2, delta2))
@@ -102,7 +99,6 @@ pairtest = function(x1, delta1, x2, delta2, n, tm = sort(unique(c(0,x1,x2))),
   pr2Ymat = matrix(0, nrow = nx, ncol = nt)
 
   #This is only among the paired indiv's
-
   dNinfo = 
     .Fortran("bivsurvmats", as.integer(nx), as.integer(nt), as.double(tm),
 	           as.double(x1pair), as.double(delta1pair), as.double(x2pair), as.double(delta2pair),
@@ -122,7 +118,7 @@ pairtest = function(x1, delta1, x2, delta2, n, tm = sort(unique(c(0,x1,x2))),
   #Y2.small=apply(dNinfo[[11]],2,sum)
   Y12 = t(dNinfo[[10]]) %*% dNinfo[[11]]  #joint Y for groups 1 and 2
 
-  J = rep(1, nt)                     
+  J = rep(1, nt)
   J[Y1*Y2 == 0] = 0
 
   #correct to here
@@ -257,7 +253,6 @@ pairtest = function(x1, delta1, x2, delta2, n, tm = sort(unique(c(0,x1,x2))),
 
   #From here we can create pepe-fleming statistics
   #fairly easily
-
   if (weights=="left") {
 	  if(min(J) == 0) {
 		  upperlimhint = min(tm[J == 0])
@@ -487,8 +482,9 @@ pairtest = function(x1, delta1, x2, delta2, n, tm = sort(unique(c(0,x1,x2))),
 #' Print a pairtest object
 #'
 #' @param object an object of class 'pairtest'
+#' @param digits numeric, number of digits to include after the decimal
 
-print.pairtest = function(object) {
+print.pairtest = function(object, digits = max(3, getOption("digits") - 3), ...) {
   
   integration_upper_limit = object$upperlim
   
@@ -539,35 +535,35 @@ print.pairtest = function(object) {
   cat(" 56, pp. 984-990.")
   cat("\n")
   cat("\n")
-  cat(paste(" Upper limit of integration is", integration_upper_limit))
+  cat(paste(" Upper limit of integration is", round2(integration_upper_limit, digits = digits)))
   cat("\n")
   cat("\n")
   cat("  Logrank statistic: ")
   cat("\n")
-  cat(paste("   Logrank estimate = ", logrank_statistic, ", ", "p-value = ", 
-            logrank_statistic_p, sep = ""))
+  cat(paste("   Logrank estimate = ", round(logrank_statistic, digits = digits), ", ", "p-value = ", 
+            round2(logrank_statistic_p, digits = digits), sep = ""))
   cat("\n")
   cat("\n")
   cat("  Gehan statistic: ")
   cat("\n")
-  cat(paste("   Gehan estimate = ", gehan_statistic, ", ", "p-value = ", 
-            gehan_statistic_p, sep = ""))
+  cat(paste("   Gehan estimate = ", round(gehan_statistic, digits = digits), ", ", "p-value = ", 
+            round2(gehan_statistic_p, digits = digits), sep = ""))
   cat("\n")
   cat("\n")
   cat("  Pepe and Fleming statistic: ")
   cat("\n")
-  cat(paste("   PF estimate = ", pepe_flem_statistic, ", ", "p-value = ", 
-            pepe_flem_statistic_p, sep = ""))
+  cat(paste("   PF estimate = ", round(pepe_flem_statistic, digits = digits), ", ", "p-value = ", 
+            round2(pepe_flem_statistic_p, digits = digits), sep = ""))
   cat("\n")
   cat("\n")
   cat("  Years of Life Statistic: ")
   cat("\n")
-  cat(paste("   YLS estimate = ", yls_statistic, ", ", "p-value = ", 
-            yls_statistic_p, sep = ""))
+  cat(paste("   YLS estimate = ", round(yls_statistic, digits = digits), ", ", "p-value = ", 
+            round2(yls_statistic_p, digits = digits), sep = ""))
   cat("\n")
   cat("\n")
-  cat(paste("   YLS area between curves = ", yls.diff, "\n   ", "  95% CI for YLS area between curves = (", 
-            yls.lower, ", ", yls.upper, ")", sep = ""))
+  cat(paste("   YLS area between curves = ", round(yls.diff, digits = digits), "\n   ", "  95% CI for YLS area between curves = (", 
+            round(yls.lower, digits = digits), ", ", round(yls.upper, digits = digits), ")", sep = ""))
   cat("\n")
   cat("\n")
   cat("\n")
@@ -577,46 +573,70 @@ print.pairtest = function(object) {
   cat("\n")
   cat("  Logrank statistic: ")
   cat("\n")
-  cat(paste("   Logrank estimate = ", logrank_assuming_indep, ", ", "p-value = ", 
-            logrank_assuming_indep_p, sep = ""))
+  cat(paste("   Logrank estimate = ", round(logrank_assuming_indep, digits = digits), ", ", "p-value = ", 
+            round2(logrank_assuming_indep_p, digits = digits), sep = ""))
   cat("\n")
   cat("\n")
   cat("  Gehan statistic: ")
   cat("\n")
-  cat(paste("   Gehan estimate = ", gehan_assuming_indep, ", ", "p-value = ", 
-            gehan_assuming_indep_p, sep = ""))
+  cat(paste("   Gehan estimate = ", round(gehan_assuming_indep, digits = digits), ", ", "p-value = ", 
+            round2(gehan_assuming_indep_p, digits = digits), sep = ""))
   cat("\n")
   cat("\n")
   cat("  Pepe and Fleming statistic: ")
   cat("\n")
-  cat(paste("   PF estimate = ", pf_assuming_indep, ", ", "p-value = ", 
-            pf_assuming_indep_p, sep = ""))
+  cat(paste("   PF estimate = ", round(pf_assuming_indep, digits = digits), ", ", "p-value = ", 
+            round2(pf_assuming_indep_p, digits = digits), sep = ""))
   cat("\n")
   cat("\n")
   cat("  Years of Life Statistic: ")
   cat("\n")
-  cat(paste("   YLS estimate = ", yls_assuming_indep, ", ", "p-value = ", 
-            yls_assuming_indep_p, sep = ""))
+  cat(paste("   YLS estimate = ", round(yls_assuming_indep, digits = digits), ", ", "p-value = ", 
+            round2(yls_assuming_indep_p, digits = digits), sep = ""))
   cat("\n")
   cat("\n")
-  cat(paste("   YLS area between curves = ", yls.diff, "\n", "    95% CI for YLS area between curves = (", 
-            yls.lower2, ", ", yls.upper2, ")", sep = ""))
+  cat(paste("   YLS area between curves = ", round(yls.diff, digits = digits), "\n", "    95% CI for YLS area between curves = (", 
+            round(yls.lower2, digits = digits), ", ", round(yls.upper2, digits = digits), ")", sep = ""))
   cat("\n")
   cat("\n")
   
 }
 
 
+#' Round for print.pairtest
+#' 
+#' If p-value is small, return a string,
+#' else return the p-value.
+#' 
+#' @param x test statistic
+#' @param ... other information to be passed to round
+#' 
+#' @return p-value or string summarizing p-value
+
+round2 = function(x, ...) {
+  
+  xr = round(x, ...)
+  if(xr < 0.0001) {
+    return('<0.0001') 
+  }
+  else { return(xr) }
+
+}
+
+
 #' Choose appropriate tail for two-sided test
 #' 
-#' For internal use only.
+#' For internal use only. This function returns the correct p-value
+#' for the Wald two-tailed test given the value of the statistic.
 #' 
 #' @param stat test statistic
 #' 
 #' @return numeric. p-value for the two-sided test
 
 dtail = function(stat) {
+  
   if(stat <= 0) { return(2*(pnorm(stat, lower.tail = T))) }
   else { return(2*(pnorm(stat, lower.tail = F))) }
+
 }
 
