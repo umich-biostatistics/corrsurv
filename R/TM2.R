@@ -23,11 +23,49 @@
 # library(survival)
 # library(MASS)
 
+#' Tau-Restricted Mean Survival
+#' 
+#' Estimate the tau-restricted mean survival across multiple follow-up intervals
+#' 
+#' Estimate the tau-restricted mean survival as described in Tayob, N. and Murray, S., 2016. 
+#' Nonparametric restricted mean analysis across multiple follow-up intervals. Statistics 
+#' & probability letters, 109, pp.152-158.
+#' 
+#' @param X follow-up time of right censored data (values must be geq 0)
+#' @param delta status indicator, 0=alive, 1=dead. (values must be 0,1)
+#' @param Tau upper limit of integration (cannot be greater than largest follow-up 
+#' time, cannot be negative)
+#' @param A study period (default=largest follow-up time,cannot be greater, cannot 
+#' be negative, should be based on rmrl plots)
+#' @param b number of follow-up windows used (default=floor(2*(A-Tau)/Tau)+1, must 
+#' be an integer, must be geq 1)
+#' @param t start times of follow-up windows (default=seq(from=0, to=A-Tau,by=(A-Tau)/(b-1)), 
+#' must be of length b if both specified, largest value cannot be greater than A-Tau, 
+#' no repeats)
+#' @param var_output Type of variance estimator. Options are c("proposed","independence",
+#' "sandwich","all")
+#' @param
+#' @param
+#' 
+#' @return A \code{list} object which contains
+#' \itemize {
+#'   \item{Mean}{vector containing sample estimates of overall tau-restricted mean survival in each group}
+#'   \item{Var}{vector containing empirical variance of estimates of overall tau-restricted mean survival in each group}
+#'   \item{test_stat}{test statistic of two-sample test}
+#'   \item{test_stat_p}{p-value of two-sample test}
+#' }
+#' 
+#' @examples
+#' data("TMdata")
+#' 
+#' 
+#' 
+#' @author Nabihah Tayob
+#' 
+#' @references Tayob, N. and Murray, S., 2016. Nonparametric restricted mean analysis 
+#' across multiple follow-up intervals. Statistics & probability letters, 109, pp.152-158.
 
-
-#Main Function
-TM2 = function(X, delta, Tau, t, var_output = "proposed", plot = FALSE, alpha = 0.05, 
-               conservative_index = 25, k = 500, n.sim = 1000) { 
+TM2 = function(X, delta, Tau, t, var_output = "proposed") { 
   #CHECK FOR ERRORS IN INPUT
   
   if(sum(X < 0) > 0) {
@@ -58,6 +96,9 @@ TM2 = function(X, delta, Tau, t, var_output = "proposed", plot = FALSE, alpha = 
      var_output != "sandwich" & var_output != "all") {
     stop("Invalid variance type")
   }
+  
+  args = match.call()
+  args$var_output = var_output
   
   #remove any subjects with missing data
   data = data.frame(X, delta)
@@ -120,18 +161,23 @@ TM2 = function(X, delta, Tau, t, var_output = "proposed", plot = FALSE, alpha = 
   
   RMRL_output=NULL
   
-  if(plot == TRUE){
-    RMRL_output = plot_RMRL(X = X_nomiss, delta = delta_nomiss, Tau = Tau, 
-                            alpha = alpha, conservative_index = conservative_index, 
-                            k = k, n.sim = n.sim)
-  }
+  # if(plot == TRUE){
+  #   RMRL_output = plot_RMRL(X = X_nomiss, delta = delta_nomiss, Tau = Tau, 
+  #                           alpha = alpha, conservative_index = conservative_index, 
+  #                           k = k, n.sim = n.sim)
+  # }
   
   list(
     Mean = results$mean,  
     proposed_variance = proposed_variance, 
     sandwich_variance = sandwich_variance, 
     independent_variance = independent_variance, 
-    RMRL_output = RMRL_output
+    RMRL_output = RMRL_output,
+    args = args,
+    plot_args = list(
+        X = X_nomiss, delta = delta_nomiss, Tau = Tau, 
+        alpha = alpha
+      )
     )
 }
 
@@ -278,12 +324,18 @@ get_sandwich_var = function(X_km, delta_km, X_array, delta_array, Tau, t, n) {
 #######################
 #RMRL functions
 #######################
-plot_RMRL = function(X, delta, Tau, alpha = 0.05, conservative_index = 25, 
+plot.RMRL = function(object, alpha = 0.05, conservative_index = 25, 
                      k = 500, n.sim = 1000, ...) {
   # INPUT
   # X=time to event
   # delta=event indicator
   # Tau=length of follow-up intervals of interest
+  
+  # pull these in
+  
+  X = args$X
+  delta = args$delta
+  Tau = args$Tau
 
   n = length(X)
   Y_X = rep(NA, n)
@@ -331,10 +383,12 @@ plot_RMRL = function(X, delta, Tau, alpha = 0.05, conservative_index = 25,
   )
 }
 
+
 prosper_function = function(X, delta, Y_X, t_in, a_in) {
   sum1 = sum(as.numeric(X > t_in & X <= (t_in + a_in))*delta/Y_X)
   exp(-sum1)
 }
+
 
 expectedlife_function = function(X, delta, Y_X, t_in, a, k) {
   n = length(X)
