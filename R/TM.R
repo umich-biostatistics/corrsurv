@@ -250,6 +250,7 @@ RMRL_function = function(data_format, Tau, t) {
 #' }
 #' 
 #' @examples
+#' data("TMdata")
 #' 
 #'
 #' @author Nabihah Tayob
@@ -324,6 +325,7 @@ TM = function(X, delta, Z, Group, Tau, t, method = "average") {
 
 print.TM = function(object, digits = max(3, getOption("digits") - 3), ...) {
   
+  test_stat = object$test_stat
   test_stat_p = object$test_stat_p
   args = object$args
   t = eval(args$t)
@@ -335,8 +337,8 @@ print.TM = function(object, digits = max(3, getOption("digits") - 3), ...) {
   results1 = object$results1
   results2 = object$results2
   
-  test_stat_p_print = paste("=", round(test_stat_p, 5))
-  if(round(test_stat_p, 5) == 0) { test_stat_p_print = "<0.00001" }
+  test_stat_p_print = paste("=", round2(test_stat_p, digits = digits))
+  #if(round(test_stat_p, 5) == 0) { test_stat_p_print = "<0.00001" }
   follow_up_windows_print = NULL
   
   for(k in 1:length(t)) {
@@ -376,9 +378,9 @@ print.TM = function(object, digits = max(3, getOption("digits") - 3), ...) {
   if(method == "average") {
     cat(" Sample Estimates: Average restricted mean survival across follow-up windows")
     cat("\n")
-    cat(paste("  Group 1: ", round(results1$mean, 5), sep = ""))
+    cat(paste("  Group 1: ", round(results1$mean, digits = digits), sep = ""))
     cat("\n")
-    cat(paste("  Group 2: ", round(results2$mean, 5), sep = ""))
+    cat(paste("  Group 2: ", round(results2$mean, digits = digits), sep = ""))
     cat("\n")
     cat("\n")
     cat("  Alternative hypothesis: True difference in the average restricted mean 
@@ -389,16 +391,16 @@ print.TM = function(object, digits = max(3, getOption("digits") - 3), ...) {
   if(method == "area") {
     cat("Sample Estimates: Area under RMRL function evaluated for each follow-up window")
     cat("\n")
-    cat(paste("Group 1: ", round(results1$area_under_RMRL, 5), sep = ""))
+    cat(paste("Group 1: ", round(results1$area_under_RMRL, digits = digits), sep = ""))
     cat("\n")
-    cat(paste("Group 2: ", round(results2$area_under_RMRL, 5), sep = ""))
+    cat(paste("Group 2: ", round(results2$area_under_RMRL, digits = digits), sep = ""))
     cat("\n")
     cat("\n")
     cat("Alternative hypothesis: True difference in the area under the RMRL functions 
         is not equal to 0")
     cat("\n")
   }
-  cat(paste("Test-statistic=", round(test_stat, 5), ", p-value", test_stat_p_print))
+  cat(paste("Test-statistic=", round(test_stat, digits = digits), ", p-value", test_stat_p_print))
   
 }
 
@@ -410,9 +412,9 @@ print.TM = function(object, digits = max(3, getOption("digits") - 3), ...) {
 plot.TM = function(object) {
   
   args = object$args
-  method = args$method
-  t = args$t
-  Tau = args$Tau
+  method = eval(args$method)
+  t = eval(args$t)
+  Tau = eval(args$Tau)
   results1 = object$results1
   results2 = object$results2
   
