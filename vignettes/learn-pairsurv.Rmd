@@ -174,6 +174,10 @@ nstuff = ((3711*3711) / (3711 + 3711))^(.5)
 ```
 
 
+##### Other options in print and plot methods
+
+
+
 #### TM(), Tayob and Murray (2014)
 
 ```{r, echo=T, warning=F, message=F, cache=T, include=T, eval=T}
@@ -214,10 +218,84 @@ print(srec.area)
 plot(srec.area)
 ```
 
+
+##### Other options in print and plot methods
+
+
+
+
 #### TM2(), Tayob and Murray (2016)
 
-```{r, echo=T, warning=F, message=F, cache=T, include=T, eval=T}
+The function `TM2()` allows the user to compute restricted mean survival across multiple follow-up intervals.
 
+The reference paper is Tayob, N. and Murray, S., 2016. Nonparametric restricted mean analysis
+ across multiple follow-up intervals. Statistics & probability letters, 109, pp.152-158.
+ 
+This method allows for flexibility in choosing variance estimate for the restricted mean survival. The options
+are `proposed`, `sandwich`, and `independence`. See the reference paper for details.
+
+Data: summarize, describe from the data help
+
+The data set contains follow-up times over multiple intervals (X) and the censoring
+indicator (delta; 1 if subject died, 0 if censored). The data set is in the "long" format
+where multiple events are each recorded as a new row rather than a new column.
+
+The data set contains a total of 100 follow-up times.
+
+```{r, echo=T, warning=F, message=F, cache=T, include=T, eval=T}
+data("TM2data")
+?TM2data
+max(TM2data$X)
 ```
+
+The maximum recorded time in the data set is:
+
+```{r, echo=T, warning=F, message=F, cache=T, include=T, eval=T}
+max(TM2data$X)
+```
+
+Similar to the other methods in this package, `TM2` is the work-horse estimation function
+and by calling `print()` on the resultant fit object a printed summary of the output will display at the console,
+and by calling `plot()` a plot of estimate and 95% bounds on the estimate will be displayed.
+
+An example of analysis with `tau = 12` and all three variance estimates outputed:
+
+```{r, echo=T, warning=F, message=F, cache=T, include=T, eval=T}
+output = TM2(X = TM2data$X, delta = TM2data$delta, Tau = 12, 
+             t = seq(from = 0, to = 24, by = 6), var_output = "all")
+print(output)
+plot(output)
+```
+
+
+An example of analysis with `tau = 12` and proposed variance estimate outputed:
+
+```{r, echo=T, warning=F, message=F, cache=T, include=T, eval=T}
+output = TM2(X = TM2data$X, delta = TM2data$delta, Tau = 12, 
+             t = seq(from = 0, to = 24, by = 6))
+print(output)
+plot(output)
+```
+
+An example of analysis with `tau = 12` and independent variance estimate outputed:
+
+```{r, echo=T, warning=F, message=F, cache=T, include=T, eval=T}
+output = TM2(X = TM2data$X, delta = TM2data$delta, Tau = 12, 
+             t = seq(from = 0, to = 24, by = 6), var_output = "independence")
+print(output)
+plot(output)
+```
+
+An example of analysis with `tau = 12` and sandwich variance estimate outputed:
+
+```{r, echo=T, warning=F, message=F, cache=T, include=T, eval=T}
+output = TM2(X = TM2data$X, delta = TM2data$delta, Tau = 12, 
+             t = seq(from = 0, to = 24, by = 6), var_output = "sandwich")
+
+print(output)
+plot(output)
+```
+
+##### Other options in print and plot methods
 
 
