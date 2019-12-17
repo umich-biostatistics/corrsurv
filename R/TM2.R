@@ -127,39 +127,26 @@ TM2 = function(X, delta, Tau, t, var_output = "proposed") {
   sandwich_variance = NULL
   independent_variance = NULL
   
-  Output = "****************************************************************************************"
-  Output = rbind(Output, "Nonparametric estimation of restricted mean survival across multiple follow-up intervals")
-  Output = rbind(Output, "****************************************************************************************")
-  Output = rbind(Output, paste("Number of patients used in the analysis is ", n))
-  t_for_printing = paste(t[1])
-  
-  for(k in 2:b) {
-    t_for_printing = paste(t_for_printing, t[k])
-  }
-  
-  Output = rbind(Output, paste("Start time of follow-up intervals:", t_for_printing))
-  Output = rbind(Output, paste("Restricted Mean Survival Estimate=", round(results$mean, 4)))
-  
   if(var_output == "proposed" | var_output == "all") {
     variance_results = get_williams_var(X_km, delta_km, X_tk, delta_tk, Tau, t, n)
-    Output = rbind(Output, paste("Proposed Variance=", round(variance_results$var, 4)))
+    #Output = rbind(Output, paste("Proposed Variance=", round(variance_results$var, 4)))
     proposed_variance = variance_results$var
   }
   
   if(var_output == "sandwich" | var_output == "all") {
     variance_results = get_sandwich_var(X_km, delta_km, X_tk, delta_tk, Tau, t, n)
-    Output = rbind(Output, paste("Sandwich Variance=", round(variance_results$var, 4)))
+    #Output = rbind(Output, paste("Sandwich Variance=", round(variance_results$var, 4)))
     sandwich_variance = variance_results$var
   }  
   
   if(var_output == "independence" | var_output == "all") {
-    Output = rbind(Output, paste("Independent Variance=", round(results$var, 4)))
+    #Output = rbind(Output, paste("Independent Variance=", round(results$var, 4)))
     independent_variance = results$var
   }
   
-  cat(Output,sep="\n")
+  #cat(Output,sep="\n")
   
-  RMRL_output=NULL
+  #RMRL_output=NULL
   
   # if(plot == TRUE){
   #   RMRL_output = plot_RMRL(X = X_nomiss, delta = delta_nomiss, Tau = Tau, 
@@ -167,18 +154,97 @@ TM2 = function(X, delta, Tau, t, var_output = "proposed") {
   #                           k = k, n.sim = n.sim)
   # }
   
-  list(
-    Mean = results$mean,  
-    proposed_variance = proposed_variance, 
-    sandwich_variance = sandwich_variance, 
-    independent_variance = independent_variance, 
-    RMRL_output = RMRL_output,
-    args = args,
-    plot_args = list(
-        X = X_nomiss, delta = delta_nomiss, Tau = Tau, 
-        alpha = alpha
-      )
+  result = 
+    list(
+      mean = results$mean,  
+      proposed_variance = proposed_variance, 
+      sandwich_variance = sandwich_variance, 
+      independent_variance = independent_variance, 
+      #RMRL_output = RMRL_output,
+      args = args,
+      plot_args = list(
+        X = X_nomiss, delta = delta_nomiss, Tau = Tau#, 
+        #alpha = alpha
+      ),
+      n = n
     )
+  
+  attr(result, "class") = "TM2"
+  
+  return(
+    result
+  )
+  
+}
+
+
+#' Print a TM2 object
+#' 
+#' @param object an object of class 'TM2'
+
+print.TM2 = function(object, digits = max(3, getOption("digits") - 3), ...) {
+  
+  args = object$args
+  mean = object$mean
+  proposed_variance = object$proposed_variance 
+  sandwich_variance = object$sandwich_variance
+  independent_variance = object$independent_variance
+  n = object$n
+  t = eval(args$t)
+  b = length(t)
+  var_output = args$var_output
+  
+  cat("\n")
+  cat(" ****************************************************************************************")
+  cat("\n")
+  cat(" Nonparametric estimation of restricted mean survival across multiple follow-up intervals")
+  cat("\n")
+  cat(" ****************************************************************************************")
+  cat("\n")
+  cat("\n")
+  cat(" Reference Paper: Tayob, N. and Murray, S., 2016. Nonparametric restricted mean analysis")
+  cat("\n")
+  cat(" across multiple follow-up intervals. Statistics & probability letters, 109, pp.152-158.")
+  cat("\n")
+  cat("\n")
+  cat(paste("  Number of patients used in the analysis is ", n, sep = ""))
+  cat("\n")
+  cat("\n")
+  
+  t_for_printing = paste(t[1])
+  
+  for(k in 2:b) {
+    t_for_printing = paste(t_for_printing, t[k])
+  }
+  
+  cat(paste("  Start time of follow-up intervals: ", t_for_printing, sep = ""))
+  cat("\n")
+  cat("\n")
+  cat(paste("  Restricted Mean Survival Estimate = ", round(mean, digits = digits), sep = ""))
+  cat("\n")
+  cat("\n")
+  
+  if(var_output == "proposed" | var_output == "all") {
+    cat(paste("   Proposed Variance = ", 
+                                 round(proposed_variance, digits = digits), sep = ""))
+    cat("\n")
+    cat("\n")
+  }
+  
+  if(var_output == "sandwich" | var_output == "all") {
+    cat(paste("   Sandwich Variance = ", 
+                                 round(sandwich_variance, digits = digits), sep = ""))
+    cat("\n")
+    cat("\n")
+  }  
+  
+  if(var_output == "independence" | var_output == "all") {
+    cat(paste("   Independent Variance = ", 
+                                 round(independent_variance, digits = digits), sep = ""))
+    cat("\n")
+    cat("\n")
+  }
+  
 }
 
 
@@ -324,7 +390,7 @@ get_sandwich_var = function(X_km, delta_km, X_array, delta_array, Tau, t, n) {
 #######################
 #RMRL functions
 #######################
-plot.RMRL = function(object, alpha = 0.05, conservative_index = 25, 
+plot.TM2 = function(object, alpha = 0.05, conservative_index = 25, 
                      k = 500, n.sim = 1000, ...) {
   # INPUT
   # X=time to event
@@ -332,7 +398,7 @@ plot.RMRL = function(object, alpha = 0.05, conservative_index = 25,
   # Tau=length of follow-up intervals of interest
   
   # pull these in
-  
+  args = object$plot_args
   X = args$X
   delta = args$delta
   Tau = args$Tau
@@ -348,9 +414,9 @@ plot.RMRL = function(object, alpha = 0.05, conservative_index = 25,
   A = max(X) #end of study time
   time_look = seq(from = 0, to = min(CB_tau, A-Tau), by = Tau/2)
   
-  cat("Times at which RMRL function is evaluated:")
-  cat("\n")
-  cat(time_look)
+  # cat("Times at which RMRL function is evaluated:")
+  # cat("\n")
+  # cat(time_look)
   
   output = array(NA, c(length(time_look), 2))
   
@@ -374,7 +440,7 @@ plot.RMRL = function(object, alpha = 0.05, conservative_index = 25,
   lines(time_look, lower_CB, lty=2, lwd=2)
   lines(time_look, adj_upper_CB, lty=2, lwd=2)
   
-  return(
+  invisible(
     list(
       RMRL = mean, 
       lower_CB = lower_CB, 
