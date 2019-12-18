@@ -298,4 +298,28 @@ plot(output)
 
 ##### Other options in print and plot methods
 
+Use `?` to explore other options to print and plot:
+
+```{r}
+?print.TM2
+```
+
+As you can see from the `Usage` section of the document, the `digits = ` argument 
+can optionally be specified if you prefer more or less precision.
+
+```{r}
+?plot.TM2
+```
+
+Optional arguments for the plot method include `alpha = 0.05, conservative_index = 25, 
+k = 500, n.sim = 1000`. 
+
+Here is a summary from the documentation:
+
+ - `alpha` is the significance level for the confidence bands
+ - `conservative_index` is the minimum number of events after the start of the last interval
+ - `k` is the number of points for intergration within follow-up window [0,Tau]
+ - `n.sim` is the number of samples simulated to calculate confidence bands
+
+These arguments can be adjusted to suit the user's plotting needs.
 

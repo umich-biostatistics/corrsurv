@@ -386,7 +386,12 @@ get_sandwich_var = function(X_km, delta_km, X_array, delta_array, Tau, t, n) {
   
 }
 
-
+# plot=Logical argument for whether RMRL function should be plotted
+# PARAMETERS FOR RMRL PLOT
+# alpha=significance level
+# conservative_index=minimum number of events after the start of the last interval
+# k=number of points for intergration within follow-up window [0,Tau]
+# n.sim=number of samples simulated to calculate confidence bands
 #######################
 #RMRL functions
 #######################
