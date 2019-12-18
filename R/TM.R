@@ -319,11 +319,11 @@ TM = function(X, delta, Z, Group, Tau, t, method = "average") {
 }
 
 
-#' Print a TM object
+#' Print the summary of a TM object
 #' 
 #' @param object an object of class 'TM'
 
-print.TM = function(object, digits = max(3, getOption("digits") - 3), ...) {
+summary.TM = function(object, digits = max(3, getOption("digits") - 3), ...) {
   
   test_stat = object$test_stat
   test_stat_p = object$test_stat_p

@@ -479,12 +479,12 @@ pairtest = function(x1, delta1, x2, delta2, n, tm = sort(unique(c(0, x1, x2))),
 }
 
 
-#' Print a pairtest object
+#' Print the summary of a pairtest object
 #'
 #' @param object an object of class 'pairtest'
 #' @param digits numeric, number of digits to include after the decimal
 
-print.pairtest = function(object, digits = max(3, getOption("digits") - 3), ...) {
+summary.pairtest = function(object, digits = max(3, getOption("digits") - 3), ...) {
   
   integration_upper_limit = object$upperlim
   

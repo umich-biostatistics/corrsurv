@@ -178,11 +178,11 @@ TM2 = function(X, delta, Tau, t, var_output = "proposed") {
 }
 
 
-#' Print a TM2 object
+#' Summarize a TM2 object
 #' 
 #' @param object an object of class 'TM2'
 
-print.TM2 = function(object, digits = max(3, getOption("digits") - 3), ...) {
+summary.TM2 = function(object, digits = max(3, getOption("digits") - 3), ...) {
   
   args = object$args
   mean = object$mean
