@@ -19,6 +19,8 @@ options(digits = 3)
 
 
 ## Introduction
+
+Note: vignette so far is mostly software implementation related; hopefully Susan can bring subject area advice to the documentation
  
 This vignette presents a step-by-step guide to the analysis of paired survival data
 using methods from the following papers:
@@ -59,11 +61,10 @@ if(!require(pairsurv)) {
 
 ## Data
 
-Two simulated data sets are included in the package. The data set `current` is used whenever `curr_method = "current"` and `historical` is used whenever `curr_method = "historical"`. Here, we load the data sets into memory.
+Three data sets are available in the package - one for the methods of each paper.
 
 ```{r, echo=T, warning=F, message=F, cache=T, include=T, eval=T}
 data("pairdata")
-data("pairdata2")
 ```
 
 ## Results
@@ -100,6 +101,13 @@ Paired Design Attractive:
 head(pairdata)
 ```
 
+Documentation for pairsurv:
+
+```{r}
+?pairsurv
+```
+
+
 The function `pairsurv` requires the time-to-event data for each pair (`x1` and `x2`)
 and the event indicator for each of the times (`delta1` for `x1`, and `delta2` for `x2`).
 The event indicators (`delta1`, `delta2`) equal 1 if the event occured and 0 if the 
@@ -110,9 +118,9 @@ eyeresults = pairtest(x1 = pairdata$x1, delta1 = pairdata$delta1,
                       x2 = pairdata$x2, delta2 = pairdata$delta2, n = 3711)
 ```
 
-Print results:
+Print a summary of the results:
 ```{r, echo=T, warning=F, message=F, cache=T, include=T, eval=T}
-print(eyeresults)
+summary(eyeresults)
 ```
 
 
@@ -174,37 +182,170 @@ nstuff = ((3711*3711) / (3711 + 3711))^(.5)
 ```
 
 
+##### Other options in print and plot methods
+
+
+
 #### TM(), Tayob and Murray (2014)
+
+```{r}
+data("TMdata")
+```
+
 
 ```{r, echo=T, warning=F, message=F, cache=T, include=T, eval=T}
 head(TMdata)
 ```
+
+Documentation for TM:
+
+```{r}
+?TM
+```
+
 
 ```{r, echo=T, warning=F, message=F, cache=T, include=T, eval=T}
 N=nrow(TMdata) #Number of subjects
 X=TMdata$X
 delta=TMdata$delta
 table(delta)
-Z=array(cbind(TMdata$Z1,TMdata$Z2,TMdata$Z3,TMdata$Z4,TMdata$Z5,TMdata$Z6),c(N,6))
-#Z = TMdata[,c('Z1', 'Z2', 'Z3', 'Z4', 'Z5', 'Z6')]
+#Z=array(cbind(TMdata$Z1,TMdata$Z2,TMdata$Z3,TMdata$Z4,TMdata$Z5,TMdata$Z6),c(N,6))
+Z = TMdata[,c('Z1', 'Z2', 'Z3', 'Z4', 'Z5', 'Z6')]
 A=max(X) #length of study
 Treatment=as.numeric(TMdata$Group==1) #1 if Case and 0 if Control
 table(Treatment,delta)
 ```
 
 ```{r, echo=T, warning=F, message=F, cache=T, include=T, eval=T}
-srec = TM(X = X, delta = delta, Z = Z, Group = Treatment, Tau = A/2, 
-          t = seq(from = 0, to = A-A/2, by = A/4))
+srec.average = TM(X = X, delta = delta, Z = Z, Group = Treatment, Tau = A/2, 
+                  t = seq(from = 0, to = A-A/2, by = A/4))
 ```
 
 ```{r, echo=T, warning=F, message=F, cache=T, include=T, eval=T}
-print(srec)
+summary(srec.average)
 ```
+
+```{r, echo=T, warning=F, message=F, cache=T, include=T, eval=T}
+srec.area = TM(X = X, delta = delta, Z = Z, Group = Treatment, Tau = A/2, 
+               t = seq(from = 0, to = A-A/2, by = A/4), method = "area")
+```
+
+```{r, echo=T, warning=F, message=F, cache=T, include=T, eval=T}
+summary(srec.area)
+```
+
+```{r, echo=T, warning=F, message=F, cache=T, include=T, eval=T}
+plot(srec.area)
+```
+
+
+##### Other options in print and plot methods
+
+
+
 
 #### TM2(), Tayob and Murray (2016)
 
-```{r, echo=T, warning=F, message=F, cache=T, include=T, eval=T}
+The function `TM2()` allows the user to compute restricted mean survival across multiple follow-up intervals.
 
+The reference paper is Tayob, N. and Murray, S., 2016. Nonparametric restricted mean analysis
+ across multiple follow-up intervals. Statistics & probability letters, 109, pp.152-158.
+ 
+This method allows for flexibility in choosing variance estimate for the restricted mean survival. The options
+are `proposed`, `sandwich`, and `independence`. See the reference paper for details.
+
+Data: summarize, describe from the data help
+
+The data set contains follow-up times over multiple intervals (X) and the censoring
+indicator (delta; 1 if subject died, 0 if censored). The data set is in the "long" format
+where multiple events are each recorded as a new row rather than a new column.
+
+The data set contains a total of 100 follow-up times.
+
+```{r, echo=T, warning=F, message=F, cache=T, include=T, eval=T}
+data("TM2data")
+?TM2data
 ```
 
+The maximum recorded time in the data set is:
+
+```{r, echo=T, warning=F, message=F, cache=T, include=T, eval=T}
+max(TM2data$X)
+```
+
+Similar to the other methods in this package, `TM2` is the work-horse estimation function
+and by calling `print()` on the resultant fit object a printed summary of the output will display at the console,
+and by calling `plot()` a plot of estimate and 95% bounds on the estimate will be displayed.
+
+Documentation for TM2:
+
+```{r}
+?TM2
+```
+
+
+An example of analysis with `tau = 12` and all three variance estimates outputed:
+
+```{r, echo=T, warning=F, message=F, cache=T, include=T, eval=T}
+output = TM2(X = TM2data$X, delta = TM2data$delta, Tau = 12, 
+             t = seq(from = 0, to = 24, by = 6), var_output = "all")
+summary(output)
+plot(output)
+```
+
+
+An example of analysis with `tau = 12` and proposed variance estimate outputed:
+
+```{r, echo=T, warning=F, message=F, cache=T, include=T, eval=T}
+output = TM2(X = TM2data$X, delta = TM2data$delta, Tau = 12, 
+             t = seq(from = 0, to = 24, by = 6))
+summary(output)
+plot(output)
+```
+
+An example of analysis with `tau = 12` and independent variance estimate outputed:
+
+```{r, echo=T, warning=F, message=F, cache=T, include=T, eval=T}
+output = TM2(X = TM2data$X, delta = TM2data$delta, Tau = 12, 
+             t = seq(from = 0, to = 24, by = 6), var_output = "independence")
+summary(output)
+plot(output)
+```
+
+An example of analysis with `tau = 12` and sandwich variance estimate outputed:
+
+```{r, echo=T, warning=F, message=F, cache=T, include=T, eval=T}
+output = TM2(X = TM2data$X, delta = TM2data$delta, Tau = 12, 
+             t = seq(from = 0, to = 24, by = 6), var_output = "sandwich")
+
+summary(output)
+plot(output)
+```
+
+##### Other options in print and plot methods
+
+Use `?` to explore other options to print and plot:
+
+```{r}
+?summary.TM2
+```
+
+As you can see from the `Usage` section of the document, the `digits = ` argument 
+can optionally be specified if you prefer more or less precision.
+
+```{r}
+?plot.TM2
+```
+
+Optional arguments for the plot method include `alpha = 0.05, conservative_index = 25, 
+k = 500, n.sim = 1000`. 
+
+Here is a summary from the documentation:
+
+ - `alpha` is the significance level for the confidence bands
+ - `conservative_index` is the minimum number of events after the start of the last interval
+ - `k` is the number of points for intergration within follow-up window [0,Tau]
+ - `n.sim` is the number of samples simulated to calculate confidence bands
+
+These arguments can be adjusted to suit the user's plotting needs.
 

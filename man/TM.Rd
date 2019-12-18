@@ -42,6 +42,7 @@ effect based on combined endpoints for mortality and recurrent events. Biostatis
 16(1), pp.73-83.
 }
 \examples{
+data("TMdata")
 
 
 }
