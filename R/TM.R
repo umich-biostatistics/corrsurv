@@ -389,18 +389,18 @@ summary.TM = function(object, digits = max(3, getOption("digits") - 3), ...) {
   }
   
   if(method == "area") {
-    cat("Sample Estimates: Area under RMRL function evaluated for each follow-up window")
+    cat(" Sample Estimates: Area under RMRL function evaluated for each follow-up window")
     cat("\n")
-    cat(paste("Group 1: ", round(results1$area_under_RMRL, digits = digits), sep = ""))
+    cat(paste("  Group 1: ", round(results1$area_under_RMRL, digits = digits), sep = ""))
     cat("\n")
-    cat(paste("Group 2: ", round(results2$area_under_RMRL, digits = digits), sep = ""))
+    cat(paste("  Group 2: ", round(results2$area_under_RMRL, digits = digits), sep = ""))
     cat("\n")
     cat("\n")
-    cat("Alternative hypothesis: True difference in the area under the RMRL functions 
+    cat(" Alternative hypothesis: True difference in the area under the RMRL functions 
         is not equal to 0")
     cat("\n")
   }
-  cat(paste("Test-statistic=", round(test_stat, digits = digits), ", p-value", test_stat_p_print))
+  cat(paste("   Test-statistic = ", round(test_stat, digits = digits), ", p-value ", test_stat_p_print, sep = ""))
   
 }
 
