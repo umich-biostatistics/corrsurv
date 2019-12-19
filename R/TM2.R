@@ -1,27 +1,4 @@
-##############################################################
-#  R package: Estimate of the tau-restricted mean survival
-##############################################################
 
-# Tayob, N. and Murray, S., 2016. Nonparametric restricted mean analysis across multiple follow-up intervals. Statistics & probability letters, 109, pp.152-158.
-
-# Arguments for main function
-# X=follow-up time of right censored data (values must be geq 0)
-# delta=status indicator, 0=alive, 1=dead. (values must be 0,1)
-# Tau=upper limit of integration (cannot be greater than largest follow-up time, cannot be negative)
-# A=study period (default=largest follow-up time,cannot be greater, cannot be negative, should be based on rmrl plots)
-# b=number of follow-up windows used (default=floor(2*(A-Tau)/Tau)+1, must be an integer, must be geq 1)
-# t=start times of follow-up windows (default=seq(from=0, to=A-Tau,by=(A-Tau)/(b-1)), must be of length b if both specified, largest value cannot be greater than A-Tau, no repeats)
-# var_output=c("proposed","independence","sandwich","all")
-# plot=Logical argument for whether RMRL function should be plotted
-  # PARAMETERS FOR RMRL PLOT
-  # alpha=significance level
-  # conservative_index=minimum number of events after the start of the last interval
-  # k=number of points for intergration within follow-up window [0,Tau]
-  # n.sim=number of samples simulated to calculate confidence bands
-
-#Load required packages
-# library(survival)
-# library(MASS)
 
 #' Tau-Restricted Mean Survival
 #' 
@@ -44,8 +21,6 @@
 #' no repeats)
 #' @param var_output Type of variance estimator. Options are c("proposed","independence",
 #' "sandwich","all")
-#' @param
-#' @param
 #' 
 #' @return A \code{list} object which contains
 #' \itemize {
@@ -56,8 +31,27 @@
 #' }
 #' 
 #' @examples
-#' data("TMdata")
+#' data("TM2data")
 #' 
+#' output = TM2(X = TM2data$X, delta = TM2data$delta, Tau = 12, 
+#'              t = seq(from = 0, to = 24, by = 6), var_output = "all")
+#' summary(output)
+#' plot(output)
+#' 
+#' output = TM2(X = TM2data$X, delta = TM2data$delta, Tau = 12, 
+#'              t = seq(from = 0, to = 24, by = 6))
+#' summary(output)
+#' plot(output)
+#' 
+#' output = TM2(X = TM2data$X, delta = TM2data$delta, Tau = 12, 
+#'              t = seq(from = 0, to = 24, by = 6), var_output = "independence")
+#' summary(output)
+#' plot(output)
+#' 
+#' output = TM2(X = TM2data$X, delta = TM2data$delta, Tau = 12, 
+#'              t = seq(from = 0, to = 24, by = 6), var_output = "sandwich")
+#' summary(output)
+#' plot(output)
 #' 
 #' 
 #' @author Nabihah Tayob
