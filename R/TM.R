@@ -10,7 +10,7 @@
 
 sum_function = function(X) {
   temp = array(X, c(length(X), length(X)))
-  lowerTriangle(temp, diag = F) = 0
+  gdata::lowerTriangle(temp, diag = F) = 0
   apply(temp, 2, sum)
 }
 
@@ -127,7 +127,7 @@ get_mu_hat_star_tau = function(X_km, delta_km, Tau, t) {
   
   time_int = T[2:(M+1)] - T[1:M]
   temp = array(dN/Y, c(M, M))
-  lowerTriangle(temp, diag = F) = 0
+  gdata::lowerTriangle(temp, diag = F) = 0
   CH = apply(temp, 2, sum)
   S_hat = exp(-CH)
   mean = sum(time_int*S_hat)
@@ -193,7 +193,7 @@ RMRL_function = function(data_format, Tau, t) {
     Y_tk = apply(Y_i_tk, 2, sum)
     lambda_tk = dN_tk / Y_tk
     temp = array(lambda_tk, c(M_time, M_time))
-    lowerTriangle(temp, diag = F) = 0
+    gdata::lowerTriangle(temp, diag = F) = 0
     S_tk_m = exp(-apply(temp, 2, sum))
     mean = sum(time_int_star*S_tk_m[1:(M_time-1)])
     RMRL[i] = mean
