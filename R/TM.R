@@ -15,7 +15,7 @@ sum_function = function(X) {
 }
 
 
-#' Format observed data for TM (Tayob, Murray method)
+#' Format observed data for TM (Tayob and Murray method)
 #' 
 #' Formats the data for the method described in Tayob, Murray 2015. This function
 #' is for internal use by TM().
@@ -77,8 +77,9 @@ format_data_ourmethod = function(X, delta, Z, t) {
 }
 
 
-#' Get estimate and variance of estimate for method described in Tayob, Murray 2015
+#' Estimate and variance for Tayob and Murray
 #' 
+#' Get estimate and variance of estimate for method described in Tayob, Murray 2015. 
 #' This function is used internally when TM() is called.
 #'
 #' @param X_km vector containing observed time to combined end-point for each follow-up window
@@ -144,8 +145,9 @@ get_mu_hat_star_tau = function(X_km, delta_km, Tau, t) {
 }
 
 
-#' Get RMRL, area under RMRL and variance of area under RMRL
-#'
+#' Calculate RMRL
+#' 
+#' Area under RMRL and variance of area under RMRL. 
 #' RMRL is the restricted mean residual life function evaluated at times defined by t.
 #' This function is used internally when TM() is called.
 #'
@@ -222,9 +224,9 @@ RMRL_function = function(data_format, Tau, t) {
 }  
 
 
-#' Two-sample recurrent events test
+#' Tayob and Murray two-sample recurrent events test
 #' 
-#' Perform the Tayob, Murray two-sample recurrent events test described in 
+#' Perform the Tayob and Murray two-sample recurrent events test described in 
 #' Tayob, N. and Murray, S., 2014. Nonparametric tests of treatment 
 #' effect based on combined endpoints for mortality and recurrent events. Biostatistics, 
 #' 16(1), pp.73-83.
@@ -251,8 +253,26 @@ RMRL_function = function(data_format, Tau, t) {
 #' 
 #' @examples
 #' data("TMdata")
+#' head(TMdata)
 #' 
-#'
+#' N=nrow(TMdata) #Number of subjects
+#' X=TMdata$X
+#' delta=TMdata$delta
+#' table(delta)
+#' Z=array(cbind(TMdata$Z1,TMdata$Z2,TMdata$Z3,TMdata$Z4,TMdata$Z5,TMdata$Z6),c(N,6))
+#' A=max(X) #length of study
+#' Treatment=as.numeric(TMdata$Group==1) #1 if Case and 0 if Control
+#' table(Treatment,delta)
+#' 
+#' srec.average = TM(X = X, delta = delta, Z = Z, Group = Treatment, Tau = A/2, 
+#'                   t = seq(from = 0, to = A-A/2, by = A/4))
+#' summary(srec.average)
+#' 
+#' srec.area = TM(X = X, delta = delta, Z = Z, Group = Treatment, Tau = A/2, 
+#'                t = seq(from = 0, to = A-A/2, by = A/4), method = "area")
+#' summary(srec.area)
+#' plot(srec.area)
+#' 
 #' @author Nabihah Tayob
 #' 
 #' @references Tayob, N. and Murray, S., 2014. Nonparametric tests of treatment 
@@ -441,7 +461,7 @@ plot.TM = function(object) {
 #'
 #' @param X vector containing observed time to terminating event
 #' @param delta vector that is 1 if terminating event is observed and 0 if patient is censored
-#' @param Z_star fill
+#' @param Z_star FILL IN
 #'
 #' @return A \code{list} object which contains
 #' \itemize {
@@ -542,21 +562,11 @@ AG_test_stat = function(data1_format, data2_format) {
 #' @param X vector containing observed time to terminating event
 #' @param delta vector that is 1 if terminating event is observed and 0 if patient 
 #' is censored
-#' @param Z_star fill
+#' @param Z_star FILL IN
 #' @param time vector containing start times of follow-up windows chosen
-#'
-#' @return A \code{list} object which contains
-#' \itemize {
-#'   \item{Y}{}
-#'   \item{tau}{}
-#'   \item{dmu_hat}{}
-#'   \item{dch_hat}{}
-#'   \item{dpsi_i}{}
-#'   \item{dM_D_i}{}
-#' }
 #' 
 #' @author Nabihah Tayob
-#'
+#' 
 #' @references Tayob, N. and Murray, S., 2014. Nonparametric tests of treatment 
 #' effect based on combined endpoints for mortality and recurrent events. Biostatistics, 
 #' 16(1), pp.73-83.
@@ -572,7 +582,13 @@ format_data_GL = function(X, delta, Z_star, time) {
   dN_D = apply(dN_D_i, 2, sum)
   Y_i = array(as.numeric(X >= time_array), c(n, n_time))
   Y = apply(Y_i, 2, sum)
-  time_array2 <<- t(array(time, c(n_time, ncol(Z_star))))
+  time_array2 <- t(array(time, c(n_time, ncol(Z_star))))
+
+  get_dN_for_i = function(X1) {
+    temp = (X1 == time_array2)
+    apply(temp, 2, sum, na.rm = T)
+  }
+  
   dN_i = t(apply(Z_star, 1, get_dN_for_i))
   
   dN = apply(dN_i, 2, sum)
@@ -617,18 +633,10 @@ format_data_GL = function(X, delta, Z_star, time) {
 }
 
 
-#' Helper to get deaths at time i
-
-get_dN_for_i = function(X1) {
-  temp = (X1 == time_array2)
-  apply(temp, 2, sum, na.rm = T)
-}
-
-
 #' Calculate test statistic for Ghosh and Lin method
-#'
-#' @param p_GL 
-#' @param time 
+#' 
+#' @param p_GL p parameter
+#' @param time time to event
 #' @param data1_format Formatted data set 1
 #' @param data2_format Formatted data set 2
 #'
