@@ -247,7 +247,7 @@ summary.TM2 = function(object, digits = max(3, getOption("digits") - 3), ...) {
 #######################
 get_independent_var = function(X_km, delta_km, Tau, t, n) {
   b = length(t)
-  km_results = summary(survival::survfit(Surv(X_km, delta_km) ~ 1))
+  km_results = summary(survival::survfit(survival::Surv(X_km, delta_km) ~ 1))
   T = c(0, km_results$time[km_results$time <= Tau], Tau)
   dN = c(0, km_results$n.event[km_results$time <= Tau])
   Y = c(n*b,km_results$n.risk[km_results$time <= Tau])
