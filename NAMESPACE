@@ -1,3 +1,7 @@
 
 exportPattern("^[^\\.]")
 useDynLib(pairsurv, .registration = TRUE)
+
+importFrom(survival, Surv)
+importFrom(survival, survfit)
+importFrom(gdata, lowerTriangle)
