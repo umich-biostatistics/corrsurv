@@ -25,6 +25,9 @@ Imports:
     MASS,
     survival,
     gdata
+Suggests: 
+    knitr,
+    rmarkdown
 VignetteBuilder: knitr
 RoxygenNote: 6.1.99.9001
 Roxygen: list(markdown = TRUE)
