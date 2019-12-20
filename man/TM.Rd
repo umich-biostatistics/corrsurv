@@ -2,7 +2,7 @@
 % Please edit documentation in R/TM.R
 \name{TM}
 \alias{TM}
-\title{Two-sample recurrent events test}
+\title{Tayob and Murray two-sample recurrent events test}
 \usage{
 TM(X, delta, Z, Group, Tau, t, method = "average")
 }
@@ -36,14 +36,32 @@ A \code{list} object which contains
 }
 }
 \description{
-Perform the Tayob, Murray two-sample recurrent events test described in
+Perform the Tayob and Murray two-sample recurrent events test described in
 Tayob, N. and Murray, S., 2014. Nonparametric tests of treatment
 effect based on combined endpoints for mortality and recurrent events. Biostatistics,
 16(1), pp.73-83.
 }
 \examples{
 data("TMdata")
+head(TMdata)
 
+N=nrow(TMdata) #Number of subjects
+X=TMdata$X
+delta=TMdata$delta
+table(delta)
+Z=array(cbind(TMdata$Z1,TMdata$Z2,TMdata$Z3,TMdata$Z4,TMdata$Z5,TMdata$Z6),c(N,6))
+A=max(X) #length of study
+Treatment=as.numeric(TMdata$Group==1) #1 if Case and 0 if Control
+table(Treatment,delta)
+
+srec.average = TM(X = X, delta = delta, Z = Z, Group = Treatment, Tau = A/2, 
+                  t = seq(from = 0, to = A-A/2, by = A/4))
+summary(srec.average)
+
+srec.area = TM(X = X, delta = delta, Z = Z, Group = Treatment, Tau = A/2, 
+               t = seq(from = 0, to = A-A/2, by = A/4), method = "area")
+summary(srec.area)
+plot(srec.area)
 
 }
 \references{

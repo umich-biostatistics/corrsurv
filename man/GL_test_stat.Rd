@@ -7,9 +7,9 @@
 GL_test_stat(p_GL, time, data1_format, data2_format)
 }
 \arguments{
-\item{p_GL}{}
+\item{p_GL}{p parameter}
 
-\item{time}{}
+\item{time}{time to event}
 
 \item{data1_format}{Formatted data set 1}
 

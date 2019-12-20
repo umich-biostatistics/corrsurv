@@ -2,7 +2,7 @@
 % Please edit documentation in R/TM.R
 \name{RMRL_function}
 \alias{RMRL_function}
-\title{Get RMRL, area under RMRL and variance of area under RMRL}
+\title{Calculate RMRL}
 \usage{
 RMRL_function(data_format, Tau, t)
 }
@@ -20,6 +20,7 @@ a \code{list} containing
 }
 }
 \description{
+Area under RMRL and variance of area under RMRL.
 RMRL is the restricted mean residual life function evaluated at times defined by t.
 This function is used internally when TM() is called.
 }

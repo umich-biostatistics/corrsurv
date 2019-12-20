@@ -2,7 +2,7 @@
 % Please edit documentation in R/TM.R
 \name{get_mu_hat_star_tau}
 \alias{get_mu_hat_star_tau}
-\title{Get estimate and variance of estimate for method described in Tayob, Murray 2015}
+\title{Estimate and variance for Tayob and Murray}
 \usage{
 get_mu_hat_star_tau(X_km, delta_km, Tau, t)
 }
@@ -24,6 +24,7 @@ a \code{list} containing
 }
 }
 \description{
+Get estimate and variance of estimate for method described in Tayob, Murray 2015.
 This function is used internally when TM() is called.
 }
 \references{

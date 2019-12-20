@@ -12,20 +12,9 @@ format_data_GL(X, delta, Z_star, time)
 \item{delta}{vector that is 1 if terminating event is observed and 0 if patient
 is censored}
 
-\item{Z_star}{fill}
+\item{Z_star}{FILL IN}
 
 \item{time}{vector containing start times of follow-up windows chosen}
-}
-\value{
-A \code{list} object which contains
-\itemize {
-\item{Y}{}
-\item{tau}{}
-\item{dmu_hat}{}
-\item{dch_hat}{}
-\item{dpsi_i}{}
-\item{dM_D_i}{}
-}
 }
 \description{
 Format observed data for Ghosh and Lin method

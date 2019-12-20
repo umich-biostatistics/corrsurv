@@ -2,7 +2,7 @@
 % Please edit documentation in R/TM.R
 \name{format_data_ourmethod}
 \alias{format_data_ourmethod}
-\title{Format observed data for TM (Tayob, Murray method)}
+\title{Format observed data for TM (Tayob and Murray method)}
 \usage{
 format_data_ourmethod(X, delta, Z, t)
 }

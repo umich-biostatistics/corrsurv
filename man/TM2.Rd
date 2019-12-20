@@ -45,8 +45,27 @@ Nonparametric restricted mean analysis across multiple follow-up intervals. Stat
 & probability letters, 109, pp.152-158.
 }
 \examples{
-data("TMdata")
+data("TM2data")
 
+output = TM2(X = TM2data$X, delta = TM2data$delta, Tau = 12, 
+             t = seq(from = 0, to = 24, by = 6), var_output = "all")
+summary(output)
+plot(output)
+
+output = TM2(X = TM2data$X, delta = TM2data$delta, Tau = 12, 
+             t = seq(from = 0, to = 24, by = 6))
+summary(output)
+plot(output)
+
+output = TM2(X = TM2data$X, delta = TM2data$delta, Tau = 12, 
+             t = seq(from = 0, to = 24, by = 6), var_output = "independence")
+summary(output)
+plot(output)
+
+output = TM2(X = TM2data$X, delta = TM2data$delta, Tau = 12, 
+             t = seq(from = 0, to = 24, by = 6), var_output = "sandwich")
+summary(output)
+plot(output)
 
 
 }
