@@ -529,7 +529,7 @@ confidence_band_kappa = function(X, delta, Y_X, a, k, t_k) {
 
 get_q_alpha = function(kappa, alpha, n_sim) {
   N = nrow(kappa) 
-  simulated_B = mvrnorm(n_sim, rep(0, N), kappa)
+  simulated_B = MASS::mvrnorm(n_sim, rep(0, N), kappa)
   sim_datasets = apply(abs(simulated_B), 1, max)
   q_alpha = sort(sim_datasets)[n_sim*(1 - alpha)]
   return(q_alpha)

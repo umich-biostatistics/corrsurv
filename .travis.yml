@@ -1,0 +1,7 @@
+language: r
+
+r: 
+  - release
+  - devel
+ 
+fortran: true

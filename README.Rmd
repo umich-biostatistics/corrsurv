@@ -1,5 +1,5 @@
 ---
-title: Get started with pairsurv
+title: Get started with *pairsurv*
 output: 
   github_document:
   html_preview: false
@@ -11,7 +11,7 @@ knitr::opts_chunk$set(echo = TRUE, eval = FALSE)
 
 ## About
 
-This package contains tools for analyzing paired survival data. Three methods are contained for the assessment of treatment effects in paired survival data are approached using the methods of Murray (2000), Tayob, Murray (2015), and Tayob, Murray (2016). The details of these methods are introduced below. See the package documentation for additional details.
+This package contains tools for analyzing correlated survival data. Three methods are contained for the assessment of treatment effects in paired survival data are approached using the methods of Murray (2000), Tayob, Murray (2015), and Tayob, Murray (2016). The details of these methods are introduced below. See the package documentation for additional details.
 
 ## Install
 

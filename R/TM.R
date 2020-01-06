@@ -172,6 +172,7 @@ RMRL_function = function(data_format, Tau, t) {
   
   b = length(t)
   data_tk = data.frame(data_format)
+  t_k = data_format$t_k
   time = unique(sort(data_tk$X_tk*as.numeric(data_tk$X_tk <= Tau)))
   M_time = length(time)
   time_int_star = time[2:M_time] - time[1:(M_time-1)]
