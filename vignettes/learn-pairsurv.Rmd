@@ -1,56 +1,71 @@
 ---
- title: "*Vignette* for `pairsurv`"
- date: "December 20, 2019"
- geometry: margin=2cm
- output: 
-  pdf_document: 
-    toc: no
- header-includes:
-  - \usepackage{booktabs}
-  - \usepackage{hyperref}
-  - \usepackage{float}
-  - \usepackage{caption}
-  - \floatplacement{figure}{H}
+title: "Vignette for `pairsurv`"
+author: "UM Department of Biostatistics"
+date: "`r Sys.Date()`"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{Vignette Title}
+  %\VignetteEngine{knitr::rmarkdown}
+  \usepackage[utf8]{inputenc}
 ---
 
 ```{r, echo=F, warning=F, message=F, cache=T, include=F, eval=T}
 options(digits = 3)
 ```
 
-
 ## Introduction
 
-Note: vignette so far is mostly software implementation related; hopefully Susan can bring subject area advice to the documentation
- 
-This vignette presents a step-by-step guide to the analysis of paired survival data
-using methods from the following papers:
+This vignette presents a step-by-step guide to the analysis of correlated survival data using
+the methods of Tayob and Murray. By the end of the tutorial, you should be familiar with the functions available to users of *pairsurv* and in creating summaries, plots, and extracting other information from the three types of objects.
 
-#### Method 1
+## Summary of methods
+
+This package allows the user to use methods from the following three papers by Tayob and Murray:
+
+### Method 1: Murray, 2000
+
+##### Description
+
+Perform two-sample tests for treatment effects with paired censored survival data.
+
+##### Reference
 
 Murray, Susan. Nonparametric Rank-Based Methods for Group Sequential Monitoring of 
 Paired Censored Survival Data. 2000. Biometrics, 56, pp. 984-990.
 
-Use the `pairtest()` function to use the methods from this paper.
+Jump to the `pairtest()` function for the methods from this paper.
 
-#### Method 2
+### Method 2: Tayob and Murray, 2014
+
+##### Description
+
+Perform the Tayob and Murray two-sample recurrent events test.
+
+##### Reference
 
 Tayob, N. and Murray, S., 2014. Nonparametric tests of treatment 
 effect based on combined endpoints for mortality and recurrent events. Biostatistics, 
 16(1), pp.73-83.
 
-Use the `TM()` function to use the methods from this paper. 
+Jump to the `TM()` function for the methods from this paper. 
 
-#### Method 3
+### Method 3: Tayob and Murray, 2016
+
+##### Description
+
+Estimate the tau-restricted mean survival across multiple follow-up intervals.
+
+##### Reference
 
 Tayob, N. and Murray, S., 2016. Nonparametric restricted mean analysis across multiple 
 follow-up intervals. Statistics & probability letters, 109, pp.152-158.
 
-Use the `TM2()` function to use the methods from this paper.
-
+Jump to the `TM2()` function for the methods from this paper.
 
 ## Install
- 
-First, install and load the `pairsurv` package and other necessary packages:
+
+First, install and load the `pairsurv` package from Github using the following 
+code chunk:
 
 ```{r, echo=T, warning=F, message=F, cache=T, include=T, eval=T}
 if(!require(pairsurv)) {
@@ -59,42 +74,34 @@ if(!require(pairsurv)) {
 }
 ```
 
-## Data
+If the code above failed to execute, try installing devtools and retry the above chunk.
 
-Three data sets are available in the package - one for the methods of each paper.
-
-```{r, echo=T, warning=F, message=F, cache=T, include=T, eval=T}
-data("pairdata")
+```{r, echo=T, warning=F, message=F, cache=T, include=T, eval=F}
+install.packages("devtools")
 ```
+
+Compiler issues;
 
 ## Results
 
-```{r, echo=F, warning=F, message=F, cache=T, include=F, eval=T}
-options(digits = 3)
-```
+### pairtest()
 
-
-#### pairtest(), Murray (2000)
-
-##### Example 1: Analysis of package data set `pairdata`.
-
-Data: 
+#### Example 1: Analysis of package data set `pairdata`.
 
 Enrolled 3711 patients with mild-to-severe nonproliferative or early proliferative 
 diabetic retinopathy in both eyes from April 1980 to July 1985 – One eye per patient 
 was randomized to early photocoagulation – The other eye deferred photocoagulation 
 until detection of high-risk proliferative retinopathy. 
-• Survival endpoint: Time to severe visual loss (deﬁned as visual acuity < 5/200 
-  at two consecutive visits) subject to censoring 
-• eventually detected a beneﬁt with early photocoagulation 
-• after 9 years of follow-up, only 5.5% of patients had experienced the event (lots of censoring)
+ - Survival endpoint: Time to severe visual loss (deﬁned as visual acuity < 5/200 at two consecutive visits) subject to censoring 
+ - Eventually detected a beneﬁt with early photocoagulation 
+ - After 9 years of follow-up, only 5.5% of patients had experienced the event (lots of censoring)
 
 Important Feature of ETDRS Data: Paired Event Times
 
 Paired Design Attractive: 
-• Historically used to minimize variability in treatment comparisons 
-• With positive correlation in pairs that is taken into account in an analysis: – higher power for ﬁxed sample size than independent designs – smaller required sample size for ﬁxed power than independent designs 
-• At the time the ETDRS study was published, the investigators did not have access to these paired tests for censored survival data, but they recognized the statistical issues relating to the correlated structure of the data. Some exploratory analysis on their part suggested “that not taking pairing into account led to conservative tests (ETDRS Research Group, 1991a, p. 749).”
+ - Historically used to minimize variability in treatment comparisons 
+ - With positive correlation in pairs that is taken into account in an analysis: – higher power for ﬁxed sample size than independent designs – smaller required sample size for ﬁxed power than independent designs 
+ - At the time the ETDRS study was published, the investigators did not have access to these paired tests for censored survival data, but they recognized the statistical issues relating to the correlated structure of the data. Some exploratory analysis on their part suggested “that not taking pairing into account led to conservative tests (ETDRS Research Group, 1991a, p. 749).”
 
 
 ```{r, echo=T, warning=F, message=F, cache=T, include=T, eval=T}
@@ -103,14 +110,14 @@ head(pairdata)
 
 Documentation for pairsurv:
 
-```{r}
-?pairsurv
+```{r, eval = FALSE}
+#?pairsurv
 ```
 
 
 The function `pairsurv` requires the time-to-event data for each pair (`x1` and `x2`)
 and the event indicator for each of the times (`delta1` for `x1`, and `delta2` for `x2`).
-The event indicators (`delta1`, `delta2`) equal 1 if the event occured and 0 if the 
+The event indicators (`delta1`, `delta2`) equal 1 if the event occurred and 0 if the 
 patient was censored.
 
 ```{r, echo=T, warning=F, message=F, cache=T, include=T, eval=T}
@@ -186,7 +193,7 @@ nstuff = ((3711*3711) / (3711 + 3711))^(.5)
 
 
 
-#### TM(), Tayob and Murray (2014)
+### TM()
 
 ```{r}
 data("TMdata")
@@ -199,8 +206,8 @@ head(TMdata)
 
 Documentation for TM:
 
-```{r}
-?TM
+```{r, eval = FALSE}
+#?TM
 ```
 
 
@@ -244,7 +251,7 @@ plot(srec.area)
 
 
 
-#### TM2(), Tayob and Murray (2016)
+### TM2()
 
 The function `TM2()` allows the user to compute restricted mean survival across multiple follow-up intervals.
 
@@ -264,7 +271,7 @@ The data set contains a total of 100 follow-up times.
 
 ```{r, echo=T, warning=F, message=F, cache=T, include=T, eval=T}
 data("TM2data")
-?TM2data
+#?TM2data
 ```
 
 The maximum recorded time in the data set is:
@@ -279,12 +286,12 @@ and by calling `plot()` a plot of estimate and 95% bounds on the estimate will b
 
 Documentation for TM2:
 
-```{r}
-?TM2
+```{r, eval = FALSE}
+#?TM2
 ```
 
 
-An example of analysis with `tau = 12` and all three variance estimates outputed:
+An example of analysis with `tau = 12` and all three variance estimates outputted:
 
 ```{r, echo=T, warning=F, message=F, cache=T, include=T, eval=T}
 output = TM2(X = TM2data$X, delta = TM2data$delta, Tau = 12, 
@@ -294,7 +301,7 @@ plot(output)
 ```
 
 
-An example of analysis with `tau = 12` and proposed variance estimate outputed:
+An example of analysis with `tau = 12` and proposed variance estimate outputted:
 
 ```{r, echo=T, warning=F, message=F, cache=T, include=T, eval=T}
 output = TM2(X = TM2data$X, delta = TM2data$delta, Tau = 12, 
@@ -303,7 +310,7 @@ summary(output)
 plot(output)
 ```
 
-An example of analysis with `tau = 12` and independent variance estimate outputed:
+An example of analysis with `tau = 12` and independent variance estimate outputted:
 
 ```{r, echo=T, warning=F, message=F, cache=T, include=T, eval=T}
 output = TM2(X = TM2data$X, delta = TM2data$delta, Tau = 12, 
@@ -312,7 +319,7 @@ summary(output)
 plot(output)
 ```
 
-An example of analysis with `tau = 12` and sandwich variance estimate outputed:
+An example of analysis with `tau = 12` and sandwich variance estimate outputted:
 
 ```{r, echo=T, warning=F, message=F, cache=T, include=T, eval=T}
 output = TM2(X = TM2data$X, delta = TM2data$delta, Tau = 12, 
@@ -322,19 +329,20 @@ summary(output)
 plot(output)
 ```
 
+
 ##### Other options in print and plot methods
 
 Use `?` to explore other options to print and plot:
 
-```{r}
-?summary.TM2
+```{r, eval = FALSE}
+#?summary.TM2
 ```
 
 As you can see from the `Usage` section of the document, the `digits = ` argument 
 can optionally be specified if you prefer more or less precision.
 
-```{r}
-?plot.TM2
+```{r, eval = FALSE}
+#?plot.TM2
 ```
 
 Optional arguments for the plot method include `alpha = 0.05, conservative_index = 25, 
@@ -344,7 +352,7 @@ Here is a summary from the documentation:
 
  - `alpha` is the significance level for the confidence bands
  - `conservative_index` is the minimum number of events after the start of the last interval
- - `k` is the number of points for intergration within follow-up window [0,Tau]
+ - `k` is the number of points for integration within follow-up window [0,Tau]
  - `n.sim` is the number of samples simulated to calculate confidence bands
 
 These arguments can be adjusted to suit the user's plotting needs.

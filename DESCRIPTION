@@ -16,15 +16,20 @@ Description: Collection of two-sample tests for treatment effects with paired ce
 NeedsCompilation: yes
 Encoding: UTF-8
 LazyData: true
-License: MIT
-URL: 
-BugReports: 
+License: GPL-2
+URL: https://github.com/umich-biostatistics/pairsurv
+BugReports: https://github.com/umich-biostatistics/pairsurv/issues
 Depends: 
     R (>= 3.4.0)
 Imports: 
     MASS,
     survival,
-    gdata
+    gdata,
+    stats
+Suggests: 
+    knitr,
+    rmarkdown,
+    devtools
 VignetteBuilder: knitr
 RoxygenNote: 6.1.99.9001
 Roxygen: list(markdown = TRUE)

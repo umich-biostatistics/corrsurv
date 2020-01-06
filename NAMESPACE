@@ -1,3 +1,12 @@
 
 exportPattern("^[^\\.]")
 useDynLib(pairsurv, .registration = TRUE)
+
+importFrom(survival, Surv)
+importFrom(survival, survfit)
+importFrom(survival, coxph)
+importFrom(gdata, lowerTriangle)
+importFrom(MASS, mvrnorm)
+importFrom("graphics", "axis", "legend", "lines", "matplot", "par",
+           "plot", "points")
+importFrom("stats", "na.omit", "pchisq", "pnorm", "var")

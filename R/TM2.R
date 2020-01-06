@@ -247,7 +247,7 @@ summary.TM2 = function(object, digits = max(3, getOption("digits") - 3), ...) {
 #######################
 get_independent_var = function(X_km, delta_km, Tau, t, n) {
   b = length(t)
-  km_results = summary(survfit(Surv(X_km, delta_km) ~ 1))
+  km_results = summary(survival::survfit(survival::Surv(X_km, delta_km) ~ 1))
   T = c(0, km_results$time[km_results$time <= Tau], Tau)
   dN = c(0, km_results$n.event[km_results$time <= Tau])
   Y = c(n*b,km_results$n.risk[km_results$time <= Tau])
@@ -282,7 +282,7 @@ get_independent_var = function(X_km, delta_km, Tau, t, n) {
 #proposed variance
 get_williams_var = function(X_km, delta_km, X_array, delta_array, Tau, t, n) {
   b = length(t)
-  km_results = summary(survfit(Surv(X_km, delta_km) ~ 1))
+  km_results = summary(survival::survfit(survival::Surv(X_km, delta_km) ~ 1))
   T = c(0, km_results$time[km_results$time <= Tau], Tau)
   dN_old = c(0, km_results$n.event[km_results$time <= Tau])
   Y_old = c(n*b, km_results$n.risk[km_results$time <= Tau])
@@ -334,7 +334,7 @@ get_williams_var = function(X_km, delta_km, X_array, delta_array, Tau, t, n) {
 #Robust Sandwich Variance 
 get_sandwich_var = function(X_km, delta_km, X_array, delta_array, Tau, t, n) {
   b = length(t)
-  km_results = summary(survfit(Surv(X_km, delta_km) ~ 1))
+  km_results = summary(survival::survfit(survival::Surv(X_km, delta_km) ~ 1))
   T = c(0, km_results$time[km_results$time <= Tau], Tau)
   dN = c(0, km_results$n.event[km_results$time <= Tau])
   Y = c(n*b, km_results$n.risk[km_results$time <= Tau])
@@ -529,7 +529,7 @@ confidence_band_kappa = function(X, delta, Y_X, a, k, t_k) {
 
 get_q_alpha = function(kappa, alpha, n_sim) {
   N = nrow(kappa) 
-  simulated_B = mvrnorm(n_sim, rep(0, N), kappa)
+  simulated_B = MASS::mvrnorm(n_sim, rep(0, N), kappa)
   sim_datasets = apply(abs(simulated_B), 1, max)
   q_alpha = sort(sim_datasets)[n_sim*(1 - alpha)]
   return(q_alpha)

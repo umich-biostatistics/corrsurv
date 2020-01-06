@@ -11,7 +11,7 @@ format_data_AG(X, delta, Z_star)
 
 \item{delta}{vector that is 1 if terminating event is observed and 0 if patient is censored}
 
-\item{Z_star}{fill}
+\item{Z_star}{FILL IN}
 }
 \value{
 A \code{list} object which contains
