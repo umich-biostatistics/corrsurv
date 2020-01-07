@@ -8,6 +8,10 @@
 }
 \arguments{
 \item{object}{an object of class 'TM2'}
+
+\item{digits}{number of digits to round to after decimal}
+
+\item{...}{additional options}
 }
 \description{
 Summarize a TM2 object

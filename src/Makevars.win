@@ -1,7 +1,4 @@
 
-PKG_FFLAGS = $(SHLIB_OPENMP_FFLAGS)
-PKG_FCFLAGS = $(SHLIB_OPENMP_FCFLAGS)
-
 FC = gfortran
 
 FT_OBJS = bivsurvmats.o nodeaths.o survinfo.o

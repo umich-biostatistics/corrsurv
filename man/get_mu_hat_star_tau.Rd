@@ -9,16 +9,16 @@ get_mu_hat_star_tau(X_km, delta_km, Tau, t)
 \arguments{
 \item{X_km}{vector containing observed time to combined end-point for each follow-up window}
 
+\item{delta_km}{vector containing combined end-point event indicator. 1 if
+combined-endpoint is observed and 0 if censored}
+
 \item{Tau}{length of follow-up intervals of interest}
 
 \item{t}{vector containing start times of follow-up windows chosen}
-
-\item{delta_tk}{vector containing combined end-point event indicator. 1 if
-combined-endpoint is observed and 0 if censored}
 }
 \value{
 a \code{list} containing
-\itemize {
+\itemize{
 \item{mean}{estimate of overall tau restricted mean survival}
 \item{var}{empirical variance estimate of mean}
 }

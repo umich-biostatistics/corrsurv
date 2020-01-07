@@ -4,10 +4,12 @@
 \alias{plot.TM}
 \title{Plot a TM object}
 \usage{
-\method{plot}{TM}(object)
+\method{plot}{TM}(x, ...)
 }
 \arguments{
-\item{object}{an object of class 'TM'}
+\item{x}{an object of class 'TM'}
+
+\item{...}{addtional options to be passed on}
 }
 \description{
 Plot a TM object

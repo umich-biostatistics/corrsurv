@@ -7,6 +7,8 @@
 TM(X, delta, Z, Group, Tau, t, method = "average")
 }
 \arguments{
+\item{X}{vector containing observed time to terminating event}
+
 \item{delta}{vector that is 1 if terminating event is observed and 0 if patient is censored}
 
 \item{Z}{array of times to recurrent events. Number of columns corresponds to
@@ -21,14 +23,10 @@ time, cannot be negative)}
 
 \item{method}{Choose "average" for mean difference test or "area" for area between
 the RMRL curves}
-
-\item{x}{vector containing observed time to terminating event}
-
-\item{plot}{TRUE if plots to be generated}
 }
 \value{
 A \code{list} object which contains
-\itemize {
+\itemize{
 \item{Mean}{vector containing sample estimates of overall tau-restricted mean survival in each group}
 \item{Var}{vector containing empirical variance of estimates of overall tau-restricted mean survival in each group}
 \item{test_stat}{test statistic of two-sample test}

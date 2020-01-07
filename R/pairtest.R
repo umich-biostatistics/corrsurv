@@ -482,7 +482,8 @@ pairtest = function(x1, delta1, x2, delta2, n, tm = sort(unique(c(0, x1, x2))),
 #' Print the summary of a pairtest object
 #'
 #' @param object an object of class 'pairtest'
-#' @param digits numeric, number of digits to include after the decimal
+#' @param digits number of digits to round to after decimal
+#' @param ... additional options
 
 summary.pairtest = function(object, digits = max(3, getOption("digits") - 3), ...) {
   

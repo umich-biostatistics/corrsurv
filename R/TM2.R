@@ -12,10 +12,6 @@
 #' @param delta status indicator, 0=alive, 1=dead. (values must be 0,1)
 #' @param Tau upper limit of integration (cannot be greater than largest follow-up 
 #' time, cannot be negative)
-#' @param A study period (default=largest follow-up time,cannot be greater, cannot 
-#' be negative, should be based on rmrl plots)
-#' @param b number of follow-up windows used (default=floor(2*(A-Tau)/Tau)+1, must 
-#' be an integer, must be geq 1)
 #' @param t start times of follow-up windows (default=seq(from=0, to=A-Tau,by=(A-Tau)/(b-1)), 
 #' must be of length b if both specified, largest value cannot be greater than A-Tau, 
 #' no repeats)
@@ -23,7 +19,7 @@
 #' "sandwich","all")
 #' 
 #' @return A \code{list} object which contains
-#' \itemize {
+#' \itemize{
 #'   \item{Mean}{vector containing sample estimates of overall tau-restricted mean survival in each group}
 #'   \item{Var}{vector containing empirical variance of estimates of overall tau-restricted mean survival in each group}
 #'   \item{test_stat}{test statistic of two-sample test}
@@ -175,6 +171,8 @@ TM2 = function(X, delta, Tau, t, var_output = "proposed") {
 #' Summarize a TM2 object
 #' 
 #' @param object an object of class 'TM2'
+#' @param digits number of digits to round to after decimal
+#' @param ... additional options
 
 summary.TM2 = function(object, digits = max(3, getOption("digits") - 3), ...) {
   
@@ -389,6 +387,12 @@ get_sandwich_var = function(X_km, delta_km, X_array, delta_array, Tau, t, n) {
 #######################
 #RMRL functions
 #######################
+
+#' Plot a TM2 object
+#' 
+#' @param x an object of class 'TM2'
+#' @param ... additional arguments
+
 plot.TM2 = function(x, ...) {
   
   elips = list(...)
