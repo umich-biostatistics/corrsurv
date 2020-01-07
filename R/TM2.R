@@ -389,15 +389,25 @@ get_sandwich_var = function(X_km, delta_km, X_array, delta_array, Tau, t, n) {
 #######################
 #RMRL functions
 #######################
-plot.TM2 = function(object, alpha = 0.05, conservative_index = 25, 
-                     k = 500, n.sim = 1000, ...) {
+plot.TM2 = function(x, ...) {
+  
+  elips = list(...)
+  alpha = elips$alpha
+  conservative_index = elips$conservative_index
+  k = elips$k
+  n.sim = elips$n.sim
+  
+  if(is.null(conservative_index)) conservative_index = 25
+  if(is.null(alpha)) alpha = 0.05
+  if(is.null(n.sim)) n.sim = 1000
+  
   # INPUT
   # X=time to event
   # delta=event indicator
   # Tau=length of follow-up intervals of interest
   
   # pull these in
-  args = object$plot_args
+  args = x$plot_args
   X = args$X
   delta = args$delta
   Tau = args$Tau

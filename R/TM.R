@@ -428,16 +428,16 @@ summary.TM = function(object, digits = max(3, getOption("digits") - 3), ...) {
 
 #' Plot a TM object
 #' 
-#' @param object an object of class 'TM'
+#' @param x an object of class 'TM'
 
-plot.TM = function(object) {
+plot.TM = function(x, ...) {
   
-  args = object$args
+  args = x$args
   method = eval(args$method)
   t = eval(args$t)
   Tau = eval(args$Tau)
-  results1 = object$results1
-  results2 = object$results2
+  results1 = x$results1
+  results2 = x$results2
   
   if(method != "area") { stop("Plotting is only implemented for the 'area' method") }
   
