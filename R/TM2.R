@@ -400,6 +400,7 @@ plot.TM2 = function(x, ...) {
   if(is.null(conservative_index)) conservative_index = 25
   if(is.null(alpha)) alpha = 0.05
   if(is.null(n.sim)) n.sim = 1000
+  if(is.null(k)) k = 500
   
   # INPUT
   # X=time to event
