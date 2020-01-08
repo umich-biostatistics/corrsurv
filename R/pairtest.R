@@ -105,7 +105,7 @@ pairtest = function(x1, delta1, x2, delta2, n, tm = sort(unique(c(0, x1, x2))),
 	           matrix(as.double(pr1dNmat), nrow = nx, ncol = nt),
 	           matrix(as.double(pr2dNmat), nrow = nx, ncol = nt),
 	           matrix(as.double(pr1Ymat), nrow = nx, ncol = nt),
-	           matrix(as.double(pr2Ymat), nrow = nx, ncol = nt))
+	           matrix(as.double(pr2Ymat), nrow = nx, ncol = nt), PACKAGE = "pairsurv")
 
   dN12 = t(dNinfo[[8]]) %*% dNinfo[[9]]  #joint dN for groups 1 and 2
   dN1.2 = t(dNinfo[[8]]) %*% dNinfo[[11]]  #conditional dN 1 given at risk in 2

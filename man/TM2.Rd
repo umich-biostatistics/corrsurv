@@ -61,7 +61,6 @@ output = TM2(X = TM2data$X, delta = TM2data$delta, Tau = 12,
 summary(output)
 plot(output)
 
-
 }
 \references{
 Tayob, N. and Murray, S., 2016. Nonparametric restricted mean analysis

@@ -3,13 +3,12 @@
 #' Early Treatment Diabetic Retinopathy Study
 #' 
 #' Enrolled 3711 patients with mild-to-severe nonproliferative or early proliferative 
-#' diabetic retinopathy in both eyes from April 1980 to July 1985 – One eye per patient 
-#' was randomized to early photocoagulation – The other eye deferred photocoagulation 
+#' diabetic retinopathy in both eyes from April 1980 to July 1985 - One eye per patient 
+#' was randomized to early photocoagulation - The other eye deferred photocoagulation 
 #' until detection of high-risk proliferative retinopathy. 
-#' • Survival endpoint: Time to severe visual loss (deﬁned as visual acuity < 5/200 
-#'   at two consecutive visits) subject to censoring 
-#' • eventually detected a beneﬁt with early photocoagulation 
-#' • after 9 years of follow-up, only 5.5% of patients had experienced the event (lots of censoring)
+#' Survival endpoint: Time to severe visual loss (defined) as visual acuity < 5/00 
+#' at two consecutive visits) subject to censoring eventually detected a beneﬁt with early photocoagulation 
+#' after 9 years of follow-up, only 5.5% of patients had experienced the event (lots of censoring)
 #' 
 #' @format A \code{data.frame} with 3711 observations (rows) and 6 variables (columns):
 #' \describe{
