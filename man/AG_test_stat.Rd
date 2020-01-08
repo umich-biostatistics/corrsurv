@@ -13,7 +13,7 @@ AG_test_stat(data1_format, data2_format)
 }
 \value{
 A \code{list} object which contains
-\itemize {
+\itemize{
 \item{test_stat_p}{p-value for the test}
 }
 }

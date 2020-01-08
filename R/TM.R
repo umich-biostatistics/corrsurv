@@ -2,6 +2,7 @@
 
 #' Helper function for column sums of upper trianglular matrix
 #' 
+#' @param X matrix
 #' @author Nabihah Tayob
 #' 
 #' @references Tayob, N. and Murray, S., 2014. Nonparametric tests of treatment 
@@ -28,7 +29,7 @@ sum_function = function(X) {
 #' @param t vector containing start times of follow-up windows chosen
 #'
 #' @return a \code{list} containing
-#' \itemize {
+#' \itemize{
 #'   \item{ID}{vector containing numeric identifying numbers for each patient corresponding to row numbers of input data}
 #'   \item{X_tk}{vector containing observed time to combined end-point for each follow-up window}
 #'   \item{delta_tk}{vector containing combined end-point event indicator. 1 if combined-endpoint is observed and 0 if censored}
@@ -83,13 +84,13 @@ format_data_ourmethod = function(X, delta, Z, t) {
 #' This function is used internally when TM() is called.
 #'
 #' @param X_km vector containing observed time to combined end-point for each follow-up window
-#' @param delta_tk vector containing combined end-point event indicator. 1 if 
+#' @param delta_km vector containing combined end-point event indicator. 1 if 
 #' combined-endpoint is observed and 0 if censored
 #' @param Tau length of follow-up intervals of interest
 #' @param t vector containing start times of follow-up windows chosen
 #'
 #' @return a \code{list} containing
-#' \itemize {
+#' \itemize{
 #'   \item{mean}{estimate of overall tau restricted mean survival}
 #'   \item{var}{empirical variance estimate of mean}
 #' }
@@ -153,10 +154,10 @@ get_mu_hat_star_tau = function(X_km, delta_km, Tau, t) {
 #'
 #' @param data_format output of function "format_data_ourmethod"
 #' @param Tau length of follow-up intervals of interest
-#' @para t vector containing start times of follow-up windows chosen
+#' @param t vector containing start times of follow-up windows chosen
 #' 
 #' @return a \code{list} containing
-#' \itemize {
+#' \itemize{
 #'   \item{RMRL}{restricted mean residual life function evaluated at times defined by t}
 #'   \item{area_under_RMRL}{area under RMRL function evaluated at times t}
 #'   \item{var_area_under_RMRL}{empirical variance of estimate area_under_RMRL}
@@ -232,7 +233,7 @@ RMRL_function = function(data_format, Tau, t) {
 #' effect based on combined endpoints for mortality and recurrent events. Biostatistics, 
 #' 16(1), pp.73-83.
 #' 
-#' @param x vector containing observed time to terminating event
+#' @param X vector containing observed time to terminating event
 #' @param delta vector that is 1 if terminating event is observed and 0 if patient is censored
 #' @param Z array of times to recurrent events. Number of columns corresponds to 
 #' maximum number of recurrent events observed for a patient
@@ -242,10 +243,9 @@ RMRL_function = function(data_format, Tau, t) {
 #' @param t vector containing start times of follow-up windows chosen
 #' @param method Choose "average" for mean difference test or "area" for area between
 #' the RMRL curves
-#' @param plot TRUE if plots to be generated
 #' 
 #' @return A \code{list} object which contains
-#' \itemize {
+#' \itemize{
 #'   \item{Mean}{vector containing sample estimates of overall tau-restricted mean survival in each group}
 #'   \item{Var}{vector containing empirical variance of estimates of overall tau-restricted mean survival in each group}
 #'   \item{test_stat}{test statistic of two-sample test}
@@ -343,6 +343,8 @@ TM = function(X, delta, Z, Group, Tau, t, method = "average") {
 #' Print the summary of a TM object
 #' 
 #' @param object an object of class 'TM'
+#' @param digits number of digits to round to after decimal
+#' @param ... additional options
 
 summary.TM = function(object, digits = max(3, getOption("digits") - 3), ...) {
   
@@ -429,6 +431,7 @@ summary.TM = function(object, digits = max(3, getOption("digits") - 3), ...) {
 #' Plot a TM object
 #' 
 #' @param x an object of class 'TM'
+#' @param ... addtional options to be passed on
 
 plot.TM = function(x, ...) {
   
@@ -465,7 +468,7 @@ plot.TM = function(x, ...) {
 #' @param Z_star FILL IN
 #'
 #' @return A \code{list} object which contains
-#' \itemize {
+#' \itemize{
 #'   \item{ID}{Patient ID}
 #'   \item{T_start}{start time}
 #'   \item{T_stop}{Stop time}
@@ -528,7 +531,7 @@ format_data_AG = function(X, delta, Z_star) {
 #' @param data2_format Data for sample 2 formatted using \code{format_data_AG}
 #' 
 #' @return A \code{list} object which contains
-#' \itemize {
+#' \itemize{
 #'   \item{test_stat_p}{p-value for the test}
 #' }
 #' 

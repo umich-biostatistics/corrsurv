@@ -10,10 +10,12 @@ RMRL_function(data_format, Tau, t)
 \item{data_format}{output of function "format_data_ourmethod"}
 
 \item{Tau}{length of follow-up intervals of interest}
+
+\item{t}{vector containing start times of follow-up windows chosen}
 }
 \value{
 a \code{list} containing
-\itemize {
+\itemize{
 \item{RMRL}{restricted mean residual life function evaluated at times defined by t}
 \item{area_under_RMRL}{area under RMRL function evaluated at times t}
 \item{var_area_under_RMRL}{empirical variance of estimate area_under_RMRL}

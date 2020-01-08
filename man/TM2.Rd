@@ -20,16 +20,10 @@ no repeats)}
 
 \item{var_output}{Type of variance estimator. Options are c("proposed","independence",
 "sandwich","all")}
-
-\item{A}{study period (default=largest follow-up time,cannot be greater, cannot
-be negative, should be based on rmrl plots)}
-
-\item{b}{number of follow-up windows used (default=floor(2*(A-Tau)/Tau)+1, must
-be an integer, must be geq 1)}
 }
 \value{
 A \code{list} object which contains
-\itemize {
+\itemize{
 \item{Mean}{vector containing sample estimates of overall tau-restricted mean survival in each group}
 \item{Var}{vector containing empirical variance of estimates of overall tau-restricted mean survival in each group}
 \item{test_stat}{test statistic of two-sample test}
@@ -66,7 +60,6 @@ output = TM2(X = TM2data$X, delta = TM2data$delta, Tau = 12,
              t = seq(from = 0, to = 24, by = 6), var_output = "sandwich")
 summary(output)
 plot(output)
-
 
 }
 \references{

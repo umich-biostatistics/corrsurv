@@ -6,6 +6,9 @@
 \usage{
 sum_function(X)
 }
+\arguments{
+\item{X}{matrix}
+}
 \description{
 Helper function for column sums of upper trianglular matrix
 }

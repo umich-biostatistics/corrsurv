@@ -15,7 +15,7 @@ format_data_AG(X, delta, Z_star)
 }
 \value{
 A \code{list} object which contains
-\itemize {
+\itemize{
 \item{ID}{Patient ID}
 \item{T_start}{start time}
 \item{T_stop}{Stop time}

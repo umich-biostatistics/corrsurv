@@ -9,7 +9,9 @@
 \arguments{
 \item{object}{an object of class 'pairtest'}
 
-\item{digits}{numeric, number of digits to include after the decimal}
+\item{digits}{number of digits to round to after decimal}
+
+\item{...}{additional options}
 }
 \description{
 Print the summary of a pairtest object

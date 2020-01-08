@@ -54,7 +54,8 @@ surv.info = function(time, fail, tmpts, outmat, nx, nt) {
                     Y = as.double(Y),
  	                  dN = as.double(dN),
 	                  as.double(Ylag),
-	                  chaz = as.double(chaz))
+	                  chaz = as.double(chaz),
+                    PACKAGE = "pairsurv")
 
     Y = temp$ans[,3]
     dN = temp$ans[,2]
@@ -71,7 +72,8 @@ surv.info = function(time, fail, tmpts, outmat, nx, nt) {
     	              as.integer(nt),
                     as.double(x),
                     as.double(tmpts),
-                    Y = as.double(Y))
+                    Y = as.double(Y),
+                    PACKAGE = "pairsurv")
     Y = temp$Y
     dN = rep(0, nt)
     NA.est = rep(0, nt)

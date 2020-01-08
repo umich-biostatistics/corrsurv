@@ -12,10 +12,6 @@
 #' @param delta status indicator, 0=alive, 1=dead. (values must be 0,1)
 #' @param Tau upper limit of integration (cannot be greater than largest follow-up 
 #' time, cannot be negative)
-#' @param A study period (default=largest follow-up time,cannot be greater, cannot 
-#' be negative, should be based on rmrl plots)
-#' @param b number of follow-up windows used (default=floor(2*(A-Tau)/Tau)+1, must 
-#' be an integer, must be geq 1)
 #' @param t start times of follow-up windows (default=seq(from=0, to=A-Tau,by=(A-Tau)/(b-1)), 
 #' must be of length b if both specified, largest value cannot be greater than A-Tau, 
 #' no repeats)
@@ -23,7 +19,7 @@
 #' "sandwich","all")
 #' 
 #' @return A \code{list} object which contains
-#' \itemize {
+#' \itemize{
 #'   \item{Mean}{vector containing sample estimates of overall tau-restricted mean survival in each group}
 #'   \item{Var}{vector containing empirical variance of estimates of overall tau-restricted mean survival in each group}
 #'   \item{test_stat}{test statistic of two-sample test}
@@ -52,7 +48,6 @@
 #'              t = seq(from = 0, to = 24, by = 6), var_output = "sandwich")
 #' summary(output)
 #' plot(output)
-#' 
 #' 
 #' @author Nabihah Tayob
 #' 
@@ -175,6 +170,8 @@ TM2 = function(X, delta, Tau, t, var_output = "proposed") {
 #' Summarize a TM2 object
 #' 
 #' @param object an object of class 'TM2'
+#' @param digits number of digits to round to after decimal
+#' @param ... additional options
 
 summary.TM2 = function(object, digits = max(3, getOption("digits") - 3), ...) {
   
@@ -389,6 +386,12 @@ get_sandwich_var = function(X_km, delta_km, X_array, delta_array, Tau, t, n) {
 #######################
 #RMRL functions
 #######################
+
+#' Plot a TM2 object
+#' 
+#' @param x an object of class 'TM2'
+#' @param ... additional arguments
+
 plot.TM2 = function(x, ...) {
   
   elips = list(...)
@@ -400,6 +403,7 @@ plot.TM2 = function(x, ...) {
   if(is.null(conservative_index)) conservative_index = 25
   if(is.null(alpha)) alpha = 0.05
   if(is.null(n.sim)) n.sim = 1000
+  if(is.null(k)) k = 500
   
   # INPUT
   # X=time to event
@@ -544,39 +548,3 @@ get_q_alpha = function(kappa, alpha, n_sim) {
   q_alpha = sort(sim_datasets)[n_sim*(1 - alpha)]
   return(q_alpha)
 }
-
-#####################
-# Example - to add to documentation!
-#####################
-
-# #read in example data
-# data=read.csv("example_data.csv")
-# max(data$X)
-# output=TM2(X=data$X,delta=data$delta,Tau=12,t=seq(from=0,to=24,by=6),var_output="all",plot=TRUE,conservative_index=10)
-# 
-# output=TM2(X=data$X,delta=data$delta,Tau=12,t=seq(from=0,to=24,by=6))
-# # ****************************************************************************************
-# #   Nonparametric estimation of restricted mean survival across multiple follow-up intervals
-# # ****************************************************************************************
-# #   Number of patients used in the analysis is  100
-# # Start time of follow-up intervals: 0 6 12 18 24
-# # Restricted Mean Survival Estimate= 10.9551
-# # Proposed Variance= 0.0277
-# 
-# output=TM2(X=data$X,delta=data$delta,Tau=12,t=seq(from=0,to=24,by=6),var_output="independence")
-# # ****************************************************************************************
-# #   Nonparametric estimation of restricted mean survival across multiple follow-up intervals
-# # ****************************************************************************************
-# #   Number of patients used in the analysis is  100
-# # Start time of follow-up intervals: 0 6 12 18 24
-# # Restricted Mean Survival Estimate= 10.9551
-# # Independent Variance= 0.0186
-# 
-# output=TM2(X=data$X,delta=data$delta,Tau=12,t=seq(from=0,to=24,by=6),var_output="sandwich")
-# # ****************************************************************************************
-# #   Nonparametric estimation of restricted mean survival across multiple follow-up intervals
-# # ****************************************************************************************
-# #   Number of patients used in the analysis is  100
-# # Start time of follow-up intervals: 0 6 12 18 24
-# # Restricted Mean Survival Estimate= 10.9551
-# # Sandwich Variance= 0.022
