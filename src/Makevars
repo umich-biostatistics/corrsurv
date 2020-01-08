@@ -1,12 +1,1 @@
-
-FC = gfortran
-
-FT_OBJS = bivsurvmats.o nodeaths.o survinfo.o
-
-OBJECTS = $(FT_OBJS)
-
-all: $(SHLIB)
-$(SHLIB): $(OBJECTS)
-
-clean:
-	@rm -rf *.o *.mod *.d *.rc *.so *.dylib *.dll *.a *.lib $(SHLIB) $(OBJECTS)
+PKG_LIBS = $(BLAS_LIBS) $(FLIBS)
