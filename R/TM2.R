@@ -2,7 +2,7 @@
 
 #' Tau-Restricted Mean Survival
 #' 
-#' Estimate the tau-restricted mean survival across multiple follow-up intervals
+#' Estimate the tau-restricted mean survival across multiple follow-up intervals.
 #' 
 #' Estimate the tau-restricted mean survival as described in Tayob, N. and Murray, S., 2016. 
 #' Nonparametric restricted mean analysis across multiple follow-up intervals. Statistics 
@@ -391,6 +391,15 @@ get_sandwich_var = function(X_km, delta_km, X_array, delta_array, Tau, t, n) {
 #' 
 #' @param x an object of class 'TM2'
 #' @param ... additional arguments
+#' 
+#' @details Four additional plot parameters are available. They include:
+#' \itemize{
+#'   \item{alpha - significance level, default is 0.05}
+#'   \item{conservative_index - minimum number of events after the start of the last interval, 
+#'   default is 25}
+#'   \item{k - number of points for intergration within follow-up window, default is 500}
+#'   \item{n.sim - number of samples simulated to calculate confidence bands, default is 1000}
+#' }
 
 plot.TM2 = function(x, ...) {
   

@@ -31,7 +31,7 @@ A \code{list} object which contains
 }
 }
 \description{
-Estimate the tau-restricted mean survival across multiple follow-up intervals
+Estimate the tau-restricted mean survival across multiple follow-up intervals.
 }
 \details{
 Estimate the tau-restricted mean survival as described in Tayob, N. and Murray, S., 2016.

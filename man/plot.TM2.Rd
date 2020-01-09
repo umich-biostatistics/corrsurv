@@ -14,3 +14,13 @@
 \description{
 Plot a TM2 object
 }
+\details{
+Four additional plot parameters are available. They include:
+\itemize{
+\item{alpha - significance level, default is 0.05}
+\item{conservative_index - minimum number of events after the start of the last interval,
+default is 25}
+\item{k - number of points for intergration within follow-up window, default is 500}
+\item{n.sim - number of samples simulated to calculate confidence bands, default is 1000}
+}
+}
