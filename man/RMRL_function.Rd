@@ -16,9 +16,9 @@ RMRL_function(data_format, Tau, t)
 \value{
 a \code{list} containing
 \itemize{
-\item{RMRL}{restricted mean residual life function evaluated at times defined by t}
-\item{area_under_RMRL}{area under RMRL function evaluated at times t}
-\item{var_area_under_RMRL}{empirical variance of estimate area_under_RMRL}
+\item{RMRL - restricted mean residual life function evaluated at times defined by t}
+\item{area_under_RMRL - area under RMRL function evaluated at times t}
+\item{var_area_under_RMRL - empirical variance of estimate area_under_RMRL}
 }
 }
 \description{

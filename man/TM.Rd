@@ -27,10 +27,10 @@ the RMRL curves}
 \value{
 A \code{list} object which contains
 \itemize{
-\item{Mean}{vector containing sample estimates of overall tau-restricted mean survival in each group}
-\item{Var}{vector containing empirical variance of estimates of overall tau-restricted mean survival in each group}
-\item{test_stat}{test statistic of two-sample test}
-\item{test_stat_p}{p-value of two-sample test}
+\item{Mean - vector containing sample estimates of overall tau-restricted mean survival in each group}
+\item{Var - vector containing empirical variance of estimates of overall tau-restricted mean survival in each group}
+\item{test_stat - test statistic of two-sample test}
+\item{test_stat_p - p-value of two-sample test}
 }
 }
 \description{

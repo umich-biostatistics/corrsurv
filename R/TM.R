@@ -30,11 +30,11 @@ sum_function = function(X) {
 #'
 #' @return a \code{list} containing
 #' \itemize{
-#'   \item{ID}{vector containing numeric identifying numbers for each patient corresponding to row numbers of input data}
-#'   \item{X_tk}{vector containing observed time to combined end-point for each follow-up window}
-#'   \item{delta_tk}{vector containing combined end-point event indicator. 1 if combined-endpoint is observed and 0 if censored}
-#'   \item{t_k}{vector containing start times of corresponding follow-up window}
-#'   \item{n}{number of patients in dataset}
+#'   \item{ID - vector containing numeric identifying numbers for each patient corresponding to row numbers of input data}
+#'   \item{X_tk - vector containing observed time to combined end-point for each follow-up window}
+#'   \item{delta_tk - vector containing combined end-point event indicator. 1 if combined-endpoint is observed and 0 if censored}
+#'   \item{t_k - vector containing start times of corresponding follow-up window}
+#'   \item{n - number of patients in dataset}
 #' }
 #' 
 #' @author Nabihah Tayob
@@ -91,8 +91,8 @@ format_data_ourmethod = function(X, delta, Z, t) {
 #'
 #' @return a \code{list} containing
 #' \itemize{
-#'   \item{mean}{estimate of overall tau restricted mean survival}
-#'   \item{var}{empirical variance estimate of mean}
+#'   \item{mean - estimate of overall tau restricted mean survival}
+#'   \item{var - empirical variance estimate of mean}
 #' }
 #' 
 #' @author Nabihah Tayob
@@ -158,9 +158,9 @@ get_mu_hat_star_tau = function(X_km, delta_km, Tau, t) {
 #' 
 #' @return a \code{list} containing
 #' \itemize{
-#'   \item{RMRL}{restricted mean residual life function evaluated at times defined by t}
-#'   \item{area_under_RMRL}{area under RMRL function evaluated at times t}
-#'   \item{var_area_under_RMRL}{empirical variance of estimate area_under_RMRL}
+#'   \item{RMRL - restricted mean residual life function evaluated at times defined by t}
+#'   \item{area_under_RMRL - area under RMRL function evaluated at times t}
+#'   \item{var_area_under_RMRL - empirical variance of estimate area_under_RMRL}
 #' }
 #' 
 #' @author Nabihah Tayob
@@ -246,10 +246,10 @@ RMRL_function = function(data_format, Tau, t) {
 #' 
 #' @return A \code{list} object which contains
 #' \itemize{
-#'   \item{Mean}{vector containing sample estimates of overall tau-restricted mean survival in each group}
-#'   \item{Var}{vector containing empirical variance of estimates of overall tau-restricted mean survival in each group}
-#'   \item{test_stat}{test statistic of two-sample test}
-#'   \item{test_stat_p}{p-value of two-sample test}
+#'   \item{Mean - vector containing sample estimates of overall tau-restricted mean survival in each group}
+#'   \item{Var - vector containing empirical variance of estimates of overall tau-restricted mean survival in each group}
+#'   \item{test_stat - test statistic of two-sample test}
+#'   \item{test_stat_p - p-value of two-sample test}
 #' }
 #' 
 #' @examples
@@ -469,10 +469,10 @@ plot.TM = function(x, ...) {
 #'
 #' @return A \code{list} object which contains
 #' \itemize{
-#'   \item{ID}{Patient ID}
-#'   \item{T_start}{start time}
-#'   \item{T_stop}{Stop time}
-#'   \item{status}{status indicator: 1 if event occured, 0 if censored}
+#'   \item{ID - Patient ID}
+#'   \item{T_start - start time}
+#'   \item{T_stop - Stop time}
+#'   \item{status - status indicator: 1 if event occured, 0 if censored}
 #' }
 #' 
 #' @author Nabihah Tayob
@@ -532,7 +532,7 @@ format_data_AG = function(X, delta, Z_star) {
 #' 
 #' @return A \code{list} object which contains
 #' \itemize{
-#'   \item{test_stat_p}{p-value for the test}
+#'   \item{test_stat_p - p-value for the test}
 #' }
 #' 
 #' @author Nabihah Tayob
@@ -646,7 +646,7 @@ format_data_GL = function(X, delta, Z_star, time) {
 #'
 #' @return A \code{list} object which contains
 #' \itemize{
-#'   \item{test_stat_p}{P-value for test statistic}
+#'   \item{test_stat_p - P-value for test statistic}
 #' }
 #' 
 #' @author Nabihah Tayob

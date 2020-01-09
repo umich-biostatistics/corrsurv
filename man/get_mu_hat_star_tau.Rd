@@ -19,8 +19,8 @@ combined-endpoint is observed and 0 if censored}
 \value{
 a \code{list} containing
 \itemize{
-\item{mean}{estimate of overall tau restricted mean survival}
-\item{var}{empirical variance estimate of mean}
+\item{mean - estimate of overall tau restricted mean survival}
+\item{var - empirical variance estimate of mean}
 }
 }
 \description{

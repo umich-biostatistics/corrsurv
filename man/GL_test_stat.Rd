@@ -18,7 +18,7 @@ GL_test_stat(p_GL, time, data1_format, data2_format)
 \value{
 A \code{list} object which contains
 \itemize{
-\item{test_stat_p}{P-value for test statistic}
+\item{test_stat_p - P-value for test statistic}
 }
 }
 \description{

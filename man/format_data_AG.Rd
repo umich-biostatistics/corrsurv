@@ -16,10 +16,10 @@ format_data_AG(X, delta, Z_star)
 \value{
 A \code{list} object which contains
 \itemize{
-\item{ID}{Patient ID}
-\item{T_start}{start time}
-\item{T_stop}{Stop time}
-\item{status}{status indicator: 1 if event occured, 0 if censored}
+\item{ID - Patient ID}
+\item{T_start - start time}
+\item{T_stop - Stop time}
+\item{status - status indicator: 1 if event occured, 0 if censored}
 }
 }
 \description{

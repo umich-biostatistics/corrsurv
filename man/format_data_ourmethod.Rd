@@ -20,11 +20,11 @@ number of recurrent events observed for a patient}
 \value{
 a \code{list} containing
 \itemize{
-\item{ID}{vector containing numeric identifying numbers for each patient corresponding to row numbers of input data}
-\item{X_tk}{vector containing observed time to combined end-point for each follow-up window}
-\item{delta_tk}{vector containing combined end-point event indicator. 1 if combined-endpoint is observed and 0 if censored}
-\item{t_k}{vector containing start times of corresponding follow-up window}
-\item{n}{number of patients in dataset}
+\item{ID - vector containing numeric identifying numbers for each patient corresponding to row numbers of input data}
+\item{X_tk - vector containing observed time to combined end-point for each follow-up window}
+\item{delta_tk - vector containing combined end-point event indicator. 1 if combined-endpoint is observed and 0 if censored}
+\item{t_k - vector containing start times of corresponding follow-up window}
+\item{n - number of patients in dataset}
 }
 }
 \description{
