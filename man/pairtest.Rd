@@ -50,7 +50,7 @@ and the event indicator for each pair of observations.
 data(pairdata)
 eyeresults = pairtest(x1 = pairdata$x1, delta1 = pairdata$delta1, 
                       x2 = pairdata$x2, delta2 = pairdata$delta2, n = 3711)
-print(eyeresults)
+summary(eyeresults)
 
 }
 \references{
