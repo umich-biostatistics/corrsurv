@@ -1,6 +1,6 @@
 Package: corrsurv
 Title: Two-Sample Tests for Correlated Survival Endpoints
-Version: 0.1.0
+Version: 1.0.0
 Authors@R: c(
     person(given = "Michael",
            family = "Kleinsasser",
