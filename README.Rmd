@@ -1,5 +1,5 @@
 ---
-title: Get started with *pairsurv*
+title: Get started with *corrsurv*
 output: 
   github_document:
   html_preview: false
@@ -17,7 +17,7 @@ three papers by Susan Murray and Nabihah Tayob.
 
 ## Install
 
-First, install and load the `pairsurv` package from Github using the following 
+First, install and load the `corrsurv` package from Github using the following 
 code:
 
 If you have not installed devtools, run the following:
@@ -29,16 +29,16 @@ install.packages("devtools")
 If devtools is sucessfully installed, run: 
 
 ```{r, echo=T, warning=F, message=F, cache=T, include=T, eval=T}
-if(!require(pairsurv)) {
+if(!require(corrsurv)) {
   library(devtools)
-  install_github('umich-biostatistics/pairsurv') 
+  install_github('umich-biostatistics/corrsurv') 
 }
 ```
 
 Load the package:
 
 ```{r, echo=T, warning=F, message=F, cache=T, include=T, eval=T}
-library(pairsurv)
+library(corrsurv)
 ```
 
 ## Summary of methods
@@ -88,5 +88,5 @@ Jump to the `TM2()` section for the methods from this paper.
 ## Results
 
 ```{r, echo=T, warning=F, message=F, cache=T, include=T, eval=F}
-vignette("learn-pairsurv")
+vignette("learn-corrsurv")
 ```

@@ -1,6 +1,6 @@
 
 exportPattern("^[^\\.]")
-useDynLib(pairsurv, .registration = TRUE)
+useDynLib(corrsurv, .registration = TRUE)
 
 importFrom(survival, Surv)
 importFrom(survival, survfit)

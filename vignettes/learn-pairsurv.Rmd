@@ -1,10 +1,10 @@
 ---
-title: "Vignette for `pairsurv`"
+title: "Vignette for `corrsurv`"
 author: "UM Department of Biostatistics"
 date: "`r Sys.Date()`"
 output: rmarkdown::html_vignette
 vignette: >
-  %\VignetteIndexEntry{learn-pairsurv}
+  %\VignetteIndexEntry{learn-corrsurv}
   %\VignetteEngine{knitr::rmarkdown}
   \usepackage[utf8]{inputenc}
 ---
@@ -16,7 +16,7 @@ options(digits = 3)
 ## Introduction
 
 This vignette presents a step-by-step guide to the analysis of correlated survival data using
-the methods of Tayob and Murray. By the end of the tutorial, you should be familiar with the functions available to users of *pairsurv* and in creating summaries, plots, and extracting other results. 
+the methods of Tayob and Murray. By the end of the tutorial, you should be familiar with the functions available to users of *corrsurv* and in creating summaries, plots, and extracting other results. 
 
 ## Summary of methods
 
@@ -64,7 +64,7 @@ Jump to the `TM2()` section for the methods from this paper.
 
 ## Install
 
-First, install and load the `pairsurv` package from Github using the following 
+First, install and load the `corrsurv` package from Github using the following 
 code:
 
 If you have not installed devtools, run the following:
@@ -76,16 +76,16 @@ install.packages("devtools")
 If devtools is sucessfully installed, run: 
 
 ```{r, echo=T, warning=F, message=F, cache=T, include=T, eval=T}
-if(!require(pairsurv)) {
+if(!require(corrsurv)) {
   library(devtools)
-  install_github('umich-biostatistics/pairsurv') 
+  install_github('umich-biostatistics/corrsurv') 
 }
 ```
 
 Load the package:
 
 ```{r, echo=T, warning=F, message=F, cache=T, include=T, eval=T}
-library(pairsurv)
+library(corrsurv)
 ```
 
 ## Results
@@ -119,13 +119,13 @@ Here is a preview of the data structure:
 head(pairdata)
 ```
 
-Documentation for pairsurv:
+Documentation for pairtest:
 
 ```{r, echo=T, warning=F, message=F, cache=T, include=T, eval=F}
-?pairsurv
+?pairtest
 ```
 
-The function `pairsurv` requires the time-to-event data for each pair (`x1` and `x2`)
+The function `pairtest` requires the time-to-event data for each pair (`x1` and `x2`)
 and the event indicator for each of the times (`delta1` for `x1`, and `delta2` for `x2`).
 The event indicators (`delta1`, `delta2`) equal 1 if the event occurred and 0 if the 
 patient was censored.
@@ -145,9 +145,9 @@ summary(eyeresults)
 
 If you need to access any result not printed by pairtest, use the $ operator to 
 search available objects to extract. The test statistic and p-value for each 
-test is returned from the call to pairsurv in a list.
+test is returned from the call to pairtest in a list.
 
-Here are the printed and stored results extracted from pairsurv:
+Here are the printed and stored results extracted from pairtest:
 
 ```{r, echo=T, warning=F, message=F, cache=T, include=T, eval=T}
 # Upper limit of integration
